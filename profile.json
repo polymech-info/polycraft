@@ -1,0 +1,41 @@
+{
+    "includes": [],
+    "variables": {
+        "PRODUCT_ROOT": "${root}/${product}/",
+        "abs_url": "https://assets.files.polymech.info",
+        "CACHE": "${root}/cache/",
+        "CACHE_URL": "${abs_url}/cache/",
+        "GIT_REPO": "https://git.polymech.info/",
+        "OSR_MACHINES_ASSETS_URL": "https://assets.files.polymech.info",
+        "PRODUCTS_ASSETS_URL": "https://assets.files.polymech.info/${product_rel}",
+        "OSR_FILES_WEB": "https://files.polymech.info/files/machines",
+        "PRODUCTS_FILES_URL": "${OSR_FILES_WEB}/${product_rel_min}",
+        "DISCORD": "https://discord.gg/s8K7yKwBRc"
+    },
+    "env": {
+        "astro-release": {
+            "includes": [
+                "${PRODUCT_ROOT}"
+            ],
+            "variables": {
+                "OSR_MACHINES_ASSETS_URL": "https://assets.files.polymech.info/"
+            }
+        },
+        "astro-debug": {
+            "includes": [
+                "${PRODUCT_ROOT}"
+            ],
+            "variables": {
+                "OSR_MACHINES_ASSETS_URL": "https://assets.files.polymech.info",
+                "showCart": false,
+                "showPrice": false,
+                "showResources": false,
+                "showShipping": false,
+                "showPaymentTerms": false,
+                "showHowtos": false,
+                "showRenderings": true,
+                "debug": true
+            }
+        }
+    }
+}

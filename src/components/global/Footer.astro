@@ -1,0 +1,98 @@
+---
+import Wrapper from "@/components/containers/Wrapper.astro"
+import { footer_left, footer_right } from "@/config/navigation.js"
+import { ISO_LANGUAGE_LABELS } from "@polymech/i18n"
+import {
+  LANGUAGES_PROD,
+  I18N_SOURCE_LANGUAGE,
+} from "config/config.js"
+
+const locale = Astro.currentLocale || I18N_SOURCE_LANGUAGE;
+const currentUrl = new URL(Astro.url);
+/**
+ * Returns the path segments of a URL with an optional language prefix removed.
+ * @param {URL} url - The current URL.
+ * @returns {string[]} The URL path segments without the language code (if present).
+ */
+const getCleanPathSegments = (url) => {
+  const segments = url.pathname.split('/').filter(Boolean);
+  if (segments.length && LANGUAGES_PROD.includes(segments[0])) {
+    segments.shift();
+  }
+  return segments;
+}
+/**
+ * Constructs a localized URL by prepending the given language code to the existing path.
+ * @param {string} lang - The target language code.
+ * @param {string[]} segments - The clean URL path segments.
+ * @returns {string} The localized URL as a string.
+ */
+const buildLocalizedUrl = (lang, segments) => {
+  const newUrl = new URL(Astro.url);
+  // Prepend the language code and join with existing segments, removing any trailing slash.
+  newUrl.pathname = `/${lang}/${segments.join('/')}`.replace(/\/+$/, '');
+  return newUrl.toString();
+}
+const cleanSegments = getCleanPathSegments(currentUrl)
+const languages = LANGUAGES_PROD.filter(
+  (lang) => lang !== locale,
+).map((lang) => ({
+  lang: ISO_LANGUAGE_LABELS[lang] || lang,
+  url: buildLocalizedUrl(lang, cleanSegments),
+}));
+const footerLeft = await footer_left(locale)
+const footerRight = await footer_right(locale)
+---
+
+<Wrapper variant="standard" class="py-12">
+  <footer class="py-2">
+    <div class="p-4 bg-[white] overflow-hidden rounded-xl">
+      <div class="grid grid-cols-2 gap-6">
+        <div
+          class="flex flex-col justify-between">
+          <nav role="navigation">
+            
+            <ul class="text-xs space-y-1 uppercase text-neutral-500">
+              {
+                footerRight.map((link) => (
+                  <li>
+                    <a class=" hover:text-orange-500" href={link.href}>
+                      {link.title}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <div class="m-2">
+              {
+                languages.map((link) => (
+                  <span>
+                    <a class=" hover:text-orange-500 p-2 " href={link.url}>
+                      {link.lang}
+                    </a>
+                  </span><br/>
+                ))
+              }
+          </div>
+          </nav>          
+        </div>
+        
+        <div class="flex flex-col justify-between md:text-right xl:pb-2 mr-2">
+          <nav role="navigation">
+            <ul class="text-xs space-y-1 uppercase text-neutral-500">
+              {
+                footerLeft.map((link) => (
+                  <li>
+                    <a class=" hover:text-orange-500" href={link.href}>
+                      {link.title}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>            
+          </nav>
+        </div>       
+      </div>
+    </div>
+  </footer>
+</Wrapper>

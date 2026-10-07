@@ -1,0 +1,8 @@
+---
+import DefaultFallback from "@/components/Default.astro"
+const { expression = false, fallback = DefaultFallback } = Astro.props
+const currentLocal = Astro.currentLocale || "en"
+---
+<div data-track={currentLocal}>
+    {expression ? <slot /> : <div/>}
+</div>

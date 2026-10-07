@@ -1,0 +1,35 @@
+---
+image: "/users/poppin-popenguine/Masques%20Par%20Musa%20Dentale.png"
+title: "Precious Plastic - User : Poppin'-Popenguine"
+description: ""
+keywords: "Precious Plastic, Precious Plastic Poppin' Popenguine, Precious Plastic workspace"
+enabled: ""
+type: "workspace"
+short: "3rd Beach, Popenguine, Senegal"
+continent: "Africa"
+country: "Senegal"
+censored: "<span class=\"text-danger\">Yes</span>"
+area: "Region de Thies / Popenguine - SN-TH - "
+---
+<br />
+<b>Brief</b>: [[short]] <br />
+<b>Censored</b>: [[censored]] <br />
+<b>Continent</b>: [[continent]] <br />
+<b>Country</b>: [[country]] <br />
+<b>Area</b>: [[area]] <br />
+<b>Created</b>: 12/4/2020 <br />
+<b>Modified</b>: 12/4/2020 <br />
+<b>Last Active</b>: 12/4/2020 <br />
+<p style="text-align:center"> <a href="/users/poppin-popenguine/Masques%20Par%20Musa%20Dentale.png"><img loading=lazy src="/users/poppin-popenguine/Masques%20Par%20Musa%20Dentale.png" /></a></p>
+<br />
+[[ page.description ]]
+<h4> Links</h4>
+<a href="https://www.patreon.com/one_army">sponsor the work - www.patreon.com/one_army</a>
+<br />
+<a href="https://www.google.com/maps/search/14.5548,-17.113">Get Directions</a>
+<div class="step-images">
+  <div class="row">
+  </div>
+</div>
+---
+---

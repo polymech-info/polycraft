@@ -1,0 +1,31 @@
+---
+import Layout from "@/components/howtos/Detail.astro";
+import { getCollection } from "astro:content";
+import { LANGUAGES_PROD as LANGUAGES } from "config/config.js";
+
+export async function getStaticPaths() {
+	const view = "howtos";
+	const items = await getCollection(view);
+	const all: unknown[] = [];
+	LANGUAGES.forEach((lang) => {
+		items.forEach((product) => {
+			all.push({
+				params: {
+					locale: lang,
+					path: product.id,
+				},
+				props: {
+					page: product,
+					locale: lang,
+					path: product.id,
+					view,
+				},
+			});
+		});
+	});
+	return all;
+}
+const { page: page, ...rest } = Astro.props;
+---
+
+<Layout frontmatter={page.data.item} {...rest} />

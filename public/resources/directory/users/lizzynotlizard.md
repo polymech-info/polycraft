@@ -1,0 +1,41 @@
+---
+image: "/users/lizzynotlizard/Precious%20Plastic%20Bham.jpg"
+title: "Precious Plastic - User : Precious-Plastic-Birmingham"
+description: ""
+keywords: "Precious Plastic, Precious Plastic Precious Plastic Birmingham, Precious Plastic community-builder"
+enabled: ""
+type: "community-builder"
+short: "We are just getting started and working to get machines up and going. While we work through our cur"
+continent: "North America"
+country: "United States of America (the)"
+censored: "<span class=\"text-danger\">Yes</span>"
+area: "Alabama / Birmingham - US-AL - 35233"
+---
+<br />
+<b>Brief</b>: [[short]] <br />
+<b>Censored</b>: [[censored]] <br />
+<b>Continent</b>: [[continent]] <br />
+<b>Country</b>: [[country]] <br />
+<b>Area</b>: [[area]] <br />
+<b>Created</b>: 4/24/2020 <br />
+<b>Modified</b>: 4/28/2020 <br />
+<b>Last Active</b>: 4/24/2020 <br />
+<p style="text-align:center"> <a href="/users/lizzynotlizard/Precious%20Plastic%20Bham.jpg"><img loading=lazy src="/users/lizzynotlizard/Precious%20Plastic%20Bham.jpg" /></a></p>
+<br />
+[[ page.description ]]
+<h4> Links</h4>
+<a href="http://www.preciousplasticsbham.slack.com">Website - www.preciousplasticsbham.slack.com</a><br />
+<a href="https://www.patreon.com/one_army">sponsor the work - www.patreon.com/one_army</a>
+<br />
+<a href="https://www.google.com/maps/search/33.5124,-86.8025">Get Directions</a>
+<div class="step-images">
+  <div class="row">
+    <div class="col-sm">
+      <a href="/users/lizzynotlizard/Precious Plastic Bham.jpg">
+        <img loading=lazy class="step-image" src="/users/lizzynotlizard/Precious Plastic Bham.jpg" />
+      </a>
+    </div>
+  </div>
+</div>
+---
+---

@@ -1,0 +1,62 @@
+{
+    "templates": {
+        "categoryList": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "mode": "completion",
+            "preferences": "none",
+            "filters": "code"
+        },
+        "itemDetails": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "mode": "completion",
+            "preferences": "none",
+            "filters": "code"
+        },
+        "searchSuggestions": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "mode": "completion",
+            "preferences": "none",
+            "filters": "code"
+        },
+        "relatedItems": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "mode": "completion",
+            "preferences": "none",
+            "filters": "code"
+        },
+        "categoryDescription": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "mode": "completion",
+            "preferences": "none",
+            "filters": "code"
+        },
+        "itemComparison": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "mode": "completion",
+            "preferences": "none",
+            "filters": "code"
+        }
+    },
+    "instructions": {
+        "context": [
+            { "flag": "categorization", "text": "Focus on proper categorization and organization" },
+            { "flag": "metadata", "text": "Include relevant metadata and attributes" },
+            { "flag": "relationships", "text": "Highlight relationships between items" },
+            { "flag": "searchability", "text": "Optimize for search and discovery" }
+        ],
+        "format": [
+            { "flag": "structured", "text": "Use structured data format" },
+            { "flag": "hierarchical", "text": "Show hierarchical relationships" }
+        ]
+    },
+    "defaults": {
+        "context": ["categorization", "metadata", "relationships", "searchability"],
+        "format": ["structured", "hierarchical"]
+    }
+} 

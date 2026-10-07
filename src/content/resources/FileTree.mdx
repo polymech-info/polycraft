@@ -1,0 +1,552 @@
+---
+pubDate: 2024-12-19
+title: FileTree Component
+author: PolyMech Team
+description: "Complete documentation for the FileTree component with glob patterns and clickable file links"
+image:
+  url: "https://fastly.picsum.photos/id/972/200/300.jpg?hmac=UMf5f6BV9GkLiz0Xz9kMwm1riiTtlpIG2jt0WrxZ51Q?grayscale"
+  alt: "FileTree component documentation"
+tags: ["component", "filetree", "documentation", "glob", "navigation"]
+sidebar:
+  label: "FileTree Guide"
+  items:
+    - label: "Overview"
+      href: "#filetree-component"
+    - label: "Basic Usage"
+      href: "#basic-usage"
+    - label: "Glob Patterns"
+      href: "#glob-pattern-support"
+    - label: "Clickable Links"
+      href: "#clickable-file-links"
+    - label: "Configuration"
+      href: "#configuration-options"
+    - label: "Examples"
+      href: "#comprehensive-examples"
+    - label: "Integration"
+      href: "#integration-examples"
+---
+
+import FileTree from "@polymech/astro-base/components/FileTree.astro";
+
+# FileTree Component
+
+The FileTree component displays hierarchical file and directory structures with automatic discovery via glob patterns and clickable file links. It's perfect for documentation, code exploration, and project navigation.
+
+## Key Features
+
+- 🔍 **Auto-Discovery**: Use glob patterns to automatically generate file trees
+- 🔗 **Clickable Links**: Files link to editors, repositories, or file system
+- 🖼️ **Thumbnail View**: Windows Explorer-style grid with image previews
+- 🎯 **Smart Filtering**: Control depth, hidden files, and exclusions
+- 🎨 **Icon Support**: Automatic file type icons
+- 📱 **Responsive**: Works on all screen sizes
+- ⚡ **Fast**: Efficient file system scanning
+
+## Basic Usage
+
+### Manual File Tree
+
+The traditional way to create file trees by manually typing the structure:
+
+<FileTree>
+
+- src/
+  - components/
+    - **Header.astro** Main header component
+    - Footer.astro
+    - Navigation.astro
+  - layouts/
+    - Layout.astro
+  - pages/
+    - index.astro
+    - about.astro
+- package.json
+- README.md
+
+</FileTree>
+
+```jsx
+<FileTree>
+- src/
+  - components/
+    - **Header.astro** Main header component
+    - Footer.astro
+  - layouts/
+    - Layout.astro
+- package.json
+</FileTree>
+```
+
+## Glob Pattern Support
+
+### Auto-Generated Trees
+
+Instead of manually typing file structures, use glob patterns to automatically discover and display files:
+
+<FileTree glob="../**/*.{md,mdx}" maxDepth={2} />
+
+```jsx
+<FileTree glob="../**/*.{md,mdx}" maxDepth={2} />
+```
+
+### Current Directory Files
+
+<FileTree glob="./*" />
+
+```jsx
+<FileTree glob="./*" />
+```
+
+### TypeScript Files Only
+
+<FileTree glob="../**/*.ts" maxDepth={3} exclude={["node_modules", "dist"]} />
+
+```jsx
+<FileTree glob="../**/*.ts" maxDepth={3} exclude={["node_modules", "dist"]} />
+```
+
+## Thumbnail View
+
+### Windows Explorer Style
+
+Perfect for browsing images and visual content:
+
+<FileTree 
+  glob="../public/images/**/*.{jpg,jpeg,png,gif,webp,svg}" 
+  view="thumbs"
+  thumbSize="medium"
+  maxDepth={2}
+/>
+
+```jsx
+<FileTree 
+  glob="../public/images/**/*.{jpg,jpeg,png,gif,webp,svg}" 
+  view="thumbs"
+  thumbSize="medium"
+  maxDepth={2}
+/>
+```
+
+### Different Thumbnail Sizes
+
+Small thumbnails with mixed file types:
+
+<FileTree 
+  glob="../src/**/*.{ts,astro,json}" 
+  view="thumbs"
+  thumbSize="small"
+  maxDepth={2}
+/>
+
+Large thumbnails for detailed preview:
+
+<FileTree 
+  glob="../public/images/**/*.{jpg,jpeg,png}" 
+  view="thumbs"
+  thumbSize="large"
+  maxDepth={1}
+/>
+
+### File Type Icons in Thumbnails
+
+Shows different icons for different file types with **imagetools integration**:
+
+<FileTree 
+  glob="../**/*.{md,ts,js,json,astro,vue,jsx}" 
+  view="thumbs"
+  thumbSize="medium"
+  maxDepth={1}
+/>
+
+### Image Optimization Features
+
+Thanks to imagetools integration, thumbnails include:
+- **AVIF Format**: Modern, efficient image format
+- **Blurred Placeholders**: Smooth loading experience  
+- **Responsive Sizing**: Automatic width generation
+- **Lazy Loading**: Performance optimization
+- **Aspect Ratio**: Consistent square thumbnails
+
+```jsx
+// Small thumbnails (80px)
+<FileTree view="thumbs" thumbSize="small" />
+
+// Medium thumbnails (120px) - default
+<FileTree view="thumbs" thumbSize="medium" />
+
+// Large thumbnails (160px)
+<FileTree view="thumbs" thumbSize="large" />
+```
+
+## Clickable File Links
+
+Files in auto-generated trees are clickable by default, supporting multiple link types:
+
+### Default (File System)
+
+<FileTree glob="../src/components/polymech/**/*.{ts,astro}" maxDepth={2} />
+
+### VS Code Integration
+
+Click files to open directly in VS Code:
+
+<FileTree 
+  glob="../src/components/polymech/**/*.astro" 
+  maxDepth={1}
+  urlPrefix="vscode://file"
+/>
+
+```jsx
+<FileTree 
+  glob="../src/components/polymech/**/*.astro" 
+  urlPrefix="vscode://file"
+/>
+```
+
+### GitHub Repository Links
+
+<FileTree 
+  glob="../**/*.json" 
+  maxDepth={1}
+  urlPrefix="https://github.com/username/repo/blob/main"
+/>
+
+```jsx
+<FileTree 
+  glob="../**/*.json" 
+  urlPrefix="https://github.com/username/repo/blob/main"
+/>
+```
+
+### Links Disabled
+
+<FileTree 
+  glob="../src/components/polymech/**/*.ts" 
+  maxDepth={1}
+  linkFiles={false}
+/>
+
+```jsx
+<FileTree 
+  glob="../src/components/polymech/**/*.ts" 
+  linkFiles={false}
+/>
+```
+
+## Configuration Options
+
+### Props Interface
+
+```typescript
+interface Props {
+  glob?: string;           // Glob pattern to auto-generate file tree
+  maxDepth?: number;       // Maximum directory depth (default: 5)
+  showHidden?: boolean;    // Show hidden files starting with . (default: false)
+  exclude?: string[];      // Patterns to exclude (default: [])
+  urlPrefix?: string;      // URL prefix for file links (auto-detected)
+  linkFiles?: boolean;     // Whether to make files clickable (default: true)
+  view?: 'tree' | 'thumbs'; // Display mode (default: 'tree')
+  thumbSize?: 'small' | 'medium' | 'large'; // Thumbnail size (default: 'medium')
+}
+```
+
+### Glob Patterns
+
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| `**/*` | All files recursively | `../src/**/*` |
+| `*.ext` | Files with specific extension | `../**/*.ts` |
+| `{a,b}` | Multiple extensions | `../**/*.{js,ts}` |
+| `**/dir/**` | Files in specific directory | `**/components/**/*` |
+| `!pattern` | Exclude pattern | Use `exclude` prop instead |
+
+### URL Prefix Types
+
+| Type | Prefix | Description |
+|------|--------|-------------|
+| **VS Code** | `vscode://file` | Opens files in VS Code editor |
+| **GitHub** | `https://github.com/user/repo/blob/main` | Links to GitHub repository |
+| **GitLab** | `https://gitlab.com/user/repo/-/blob/main` | Links to GitLab repository |
+| **File System** | `file://` | Opens local files in system |
+| **Custom** | `https://your-viewer.com` | Custom file viewer |
+| **Default** | Auto-detected | Uses current dev server |
+
+## Comprehensive Examples
+
+### Development Workflow
+
+Show project structure with VS Code integration:
+
+<FileTree 
+  glob="../src/**/*.{astro,ts,js}" 
+  maxDepth={3}
+  exclude={["node_modules", ".git", "dist", "build"]}
+  urlPrefix="vscode://file"
+/>
+
+```jsx
+<FileTree 
+  glob="../src/**/*.{astro,ts,js}" 
+  maxDepth={3}
+  exclude={["node_modules", ".git", "dist", "build"]}
+  urlPrefix="vscode://file"
+/>
+```
+
+### Documentation Files
+
+<FileTree 
+  glob="../**/*.{md,mdx}" 
+  maxDepth={2}
+  urlPrefix="https://github.com/yourorg/yourrepo/blob/main"
+/>
+
+```jsx
+<FileTree 
+  glob="../**/*.{md,mdx}" 
+  maxDepth={2}
+  urlPrefix="https://github.com/yourorg/yourrepo/blob/main"
+/>
+```
+
+### Configuration Files
+
+<FileTree 
+  glob="../**/*.{json,yaml,yml,toml,config.js,config.ts}" 
+  maxDepth={2}
+/>
+
+```jsx
+<FileTree 
+  glob="../**/*.{json,yaml,yml,toml,config.js,config.ts}" 
+  maxDepth={2}
+/>
+```
+
+### Show Hidden Files
+
+<FileTree 
+  glob="../**/*" 
+  maxDepth={2}
+  showHidden={true}
+  exclude={["node_modules"]}
+/>
+
+```jsx
+<FileTree 
+  glob="../**/*" 
+  maxDepth={2}
+  showHidden={true}
+  exclude={["node_modules"]}
+/>
+```
+
+## Integration Examples
+
+### With Astro Projects
+
+```jsx
+// Show Astro project structure
+<FileTree 
+  glob="../src/**/*.astro" 
+  maxDepth={3}
+  urlPrefix="vscode://file"
+/>
+
+// Show content collections
+<FileTree 
+  glob="../src/content/**/*.{md,mdx}" 
+  maxDepth={2}
+/>
+```
+
+### With React/Vue Projects
+
+```jsx
+// Show component files
+<FileTree 
+  glob="../src/**/*.{jsx,tsx,vue}" 
+  maxDepth={3}
+  exclude={["node_modules", "dist"]}
+/>
+```
+
+### With Documentation Sites
+
+```jsx
+// Link to GitHub for editing
+<FileTree 
+  glob="../docs/**/*.md" 
+  urlPrefix="https://github.com/yourorg/docs/edit/main"
+  maxDepth={2}
+/>
+```
+
+### Custom File Viewer
+
+```jsx
+// Link to custom file viewer API
+<FileTree 
+  glob="../**/*.log" 
+  urlPrefix="https://yourapp.com/file-viewer"
+  maxDepth={1}
+/>
+```
+
+## Advanced Features
+
+### File Type Icons & Modern Link Styling
+
+The FileTree automatically displays appropriate icons and uses subtle, modern link styling:
+
+**File Icons:**
+- 📄 `.md`, `.mdx` - Markdown files
+- 🟦 `.ts`, `.tsx` - TypeScript files  
+- 🟨 `.js`, `.jsx` - JavaScript files
+- 🎨 `.astro` - Astro components
+- ⚙️ `.json`, `.yaml` - Configuration files
+- 📁 Directories with gold folder icons
+
+**Link Styling Best Practices:**
+- **Subtle Colors**: No aggressive blue links - uses content text color
+- **Background Hover**: Gentle background highlight on hover instead of color change
+- **Subtle Underline**: Thin, muted underline appears on hover
+- **Clickable Indicators**: Small dots on thumbnails indicate clickable items
+- **Accessibility**: Proper focus states and keyboard navigation
+- **Consistent**: Same styling approach across tree and thumbnail views
+
+### Responsive Design
+
+The FileTree adapts to different screen sizes:
+- Desktop: Full tree with hover effects
+- Mobile: Collapsible directories
+- Touch-friendly click targets
+
+### Performance Optimized
+
+- Efficient file system scanning
+- Lazy directory expansion
+- Cached glob results
+- Minimal DOM updates
+
+## Best Practices
+
+### 1. Use Appropriate Depth Limits
+
+```jsx
+// Good - reasonable depth
+<FileTree glob="../src/**/*" maxDepth={3} />
+
+// Avoid - too deep, slow performance
+<FileTree glob="../**/*" maxDepth={10} />
+```
+
+### 2. Exclude Unnecessary Directories
+
+```jsx
+// Good - exclude build artifacts
+<FileTree 
+  glob="../**/*" 
+  exclude={["node_modules", ".git", "dist", "build", ".cache"]}
+/>
+```
+
+### 3. Use Specific Patterns
+
+```jsx
+// Good - specific file types
+<FileTree glob="../src/**/*.{astro,ts}" />
+
+// Less efficient - too broad
+<FileTree glob="../**/*" />
+```
+
+### 4. Choose Appropriate URL Prefixes
+
+```jsx
+// Development - VS Code
+<FileTree urlPrefix="vscode://file" />
+
+// Documentation - GitHub
+<FileTree urlPrefix="https://github.com/user/repo/blob/main" />
+
+// Local browsing - file system
+<FileTree urlPrefix="file://" />
+```
+
+## Troubleshooting
+
+### No Files Found
+
+If your FileTree shows "No files found", the error message now includes debugging information:
+
+```
+No files found matching pattern: ./gallery/*.jpg
+Searched in: /full/path/to/src/content/resources
+```
+
+This helps you verify:
+
+1. **Pattern Syntax**: Check if your glob pattern is correct
+2. **Search Location**: Verify the absolute path is where you expect
+3. **File Existence**: Confirm files actually exist in the searched directory
+4. **Exclude Patterns**: Check if exclude patterns aren't too broad
+
+### Debug Examples
+
+<FileTree 
+  glob="./non-existent/*.jpg" 
+  view="thumbs"
+  thumbSize="small"
+/>
+
+<FileTree 
+  glob="./missing-dir/**/*.png" 
+  view="tree"
+  maxDepth={2}
+/>
+
+### Links Not Working
+
+If file links don't work:
+
+1. Check the `urlPrefix` is correct for your environment
+2. Verify the protocol is supported by your system
+3. For VS Code links, ensure VS Code is installed
+4. For repository links, check the URL format
+
+### Performance Issues
+
+If FileTree is slow:
+
+1. Reduce `maxDepth` value
+2. Use more specific glob patterns
+3. Add more items to `exclude` array
+4. Consider using `linkFiles={false}` for display-only trees
+
+## Migration Guide
+
+### From Manual Trees
+
+Replace manual file listings:
+
+```jsx
+// Old way
+<FileTree>
+- src/
+  - components/
+    - Header.astro
+    - Footer.astro
+</FileTree>
+
+// New way
+<FileTree glob="../src/components/**/*.astro" />
+```
+
+### From Other File Tree Components
+
+The FileTree component is compatible with standard markdown file tree syntax, making migration straightforward.
+
+---
+
+The FileTree component transforms static file documentation into interactive, always-up-to-date navigation tools. Perfect for project documentation, code exploration, and development workflows!

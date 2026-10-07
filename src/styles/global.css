@@ -1,0 +1,490 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@layer components {
+  .prose-styles {
+    @apply hover:prose-a:text-black prose  prose-blockquote:border-l-black prose-blockquote:text-neutral-600 prose-code:text-black prose-headings:text-black   text-neutral-600 prose-pre:rounded-xl prose-pre:p-4 max-w-none  prose-headings:font-medium prose-pre:normal-case prose-pre:bg-white;
+    /* Base layout classes */
+    @apply prose max-w-3xl pt-0 mx-auto;
+  }
+  .simple-prose-styles {
+    @apply prose text-xs uppercase prose-headings:text-xs  prose-pre:normal-case;
+  }
+  
+  /* Image layout utilities */
+  .floating-image {
+    @apply flex-1 min-w-0;
+  }
+  .floating-image img {
+    @apply w-full h-auto block;
+  }
+  
+  .image-row {
+    @apply flex gap-2 items-center w-full;
+  }
+}
+@layer base {
+  a {
+    @apply text-gray-700 dark:text-gray-200 no-underline transition-all duration-200;
+    position: relative;
+    /*padding: 1px 2px;*/
+    border-radius: 3px;
+  }
+  a:hover {
+    @apply bg-gray-100 dark:bg-gray-800;
+    text-decoration: underline;
+    text-decoration-color: #9ca3af; /* gray-400 */
+    text-underline-offset: 2px;
+  }
+  a:focus {
+    @apply outline-2 outline-blue-500 outline-offset-2;
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  a:visited {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+}
+
+@layer base {
+  table {
+    @apply min-w-full border-collapse;
+  }
+  table thead {
+    @apply bg-gray-200;
+  }
+  table th {
+    @apply py-3 px-6 text-left text-xs font-medium text-gray-600 uppercase tracking-wider;
+  }
+  table td {
+    @apply py-4 px-6 border-b border-gray-200;
+  }
+  table tbody tr {
+    @apply transition-colors;
+  }
+  table tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+  table tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  table tbody tr:nth-child(odd):hover {
+    @apply bg-orange-50;
+  }
+  table tbody tr:nth-child(even):hover {
+    @apply bg-orange-100;
+  }
+}
+@layer base {
+  .astro-imagetools-img {
+    @apply min-w-full border-collapse rounded-lg overflow-hidden;
+    background-image: none !important;
+  }
+  .lightbox-main{
+    background-image: none !important;
+  }
+}
+@layer base {
+  .specs-table {
+    @apply min-w-full border-collapse rounded-lg overflow-hidden;
+  }
+  .specs-table thead {
+    @apply bg-gray-200;
+  }
+  .specs-table th {
+    @apply py-3 px-6 text-left text-xs text-gray-600 uppercase tracking-wider;
+  }
+  .specs-table td {
+    @apply py-4 px-6 border-b border-gray-200;
+  }
+  .specs-table tbody tr {
+    @apply transition-colors;
+  }
+  .specs-table tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+  .specs-table tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  .specs-table tbody tr:nth-child(odd):hover {
+    @apply bg-orange-50;
+  }
+  .specs-table tbody tr:nth-child(even):hover {
+    @apply bg-orange-100;
+  }
+  /* Bold the first column cells */
+  .specs-table th:first-child,
+  .specs-table td:first-child {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  .table-default {
+    @apply min-w-full border-collapse shadow-lg;
+  }
+  .table-default thead {
+    @apply bg-gray-200;
+  }
+  .table-default th {
+    @apply py-3 px-6 text-left text-xs font-medium text-gray-600 uppercase tracking-wider;
+  }
+  .table-default td {
+    @apply py-4 px-6 border-b border-gray-200;
+  }
+  .table-default tbody tr {
+    @apply transition-colors;
+  }
+  /* Alternating row colors */
+  .table-default tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+  .table-default tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  /* Hover effects with orange tint */
+  .table-default tbody tr:nth-child(odd):hover {
+    @apply bg-orange-50;
+  }
+  .table-default tbody tr:nth-child(even):hover {
+    @apply bg-orange-100;
+  }
+}
+
+
+@theme { 
+  /* Typography*/
+  /*
+  --font-sans: "Inter", sans-serif;
+  --: "IBM PLex Mono", monospace;
+  */
+  --text-xs:1rem;
+  /* Colors */
+  --color-orange-50: hsl(22, 100%, 96%);
+  --color-orange-100: hsl(25, 100%, 91%);
+  --color-orange-200: hsl(22, 100%, 82%);
+  --color-orange-300: hsl(20, 100%, 71%);
+  --color-orange-400: hsl(16, 100%, 60%);
+  --color-orange-500: hsl(14, 100%, 52%);
+  --color-orange-600: hsl(9, 100%, 50%);
+  --color-orange-700: hsl(6, 98%, 40%);
+  --color-orange-800: hsl(4, 87%, 34%);
+  --color-orange-900: hsl(4, 83%, 28%);
+  --color-orange-950: hsl(1, 89%, 15%);
+  /* colors */
+  --color-white: #fafafa;
+  --color-black: #12161d;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    /*font-family: InterVariable, sans-serif;*/
+  }
+}
+:root {
+  /* Typography*/
+  /*font-family: Inter, sans-serif;*/
+
+  font-feature-settings: "liga2" 1, "calt" 1,
+    /* Contextual Alternates */ "dlig" 1, /* Discretionary Ligatures */ "ss07" 1,
+    /* fSquare punctuation */ "ss08" 1, /* Square quotes */ "zero" 1,
+    /* Slashed zero */ "tnum" 1, /* Tabular numbers */ "cv03" 1,
+    /* Open six */ "cv04" 1, /* Open nine */ "cv01" 1,
+    /* Alternate one */ "cv09", /* Flat-top three */ "cv02" 1; /* Open 4 */
+  /* style code blocks*/
+  
+}
+
+
+.markdown-content {
+  @apply prose dark:prose-invert max-w-full overflow-x-hidden;
+  /* Ensure content doesn't exceed viewport on mobile */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Headings (Scaled Down & Responsive) */
+.markdown-content h1 {
+  @apply text-xl font-medium mt-5 mb-3 md:mt-6 md:mb-4;
+}
+.markdown-content h2 {
+  @apply text-xs font-medium mt-4 mb-2 md:mt-5 md:mb-3;
+}
+.markdown-content h3 {
+  @apply text-sm font-medium mt-3 mb-1 md:mt-4 md:mb-3;
+}
+.markdown-content h4 {
+  @apply text-neutral-500 font-medium mt-3 mb-1 md:mt-4 md:mb-2;
+}
+.markdown-content h5 {
+  @apply text-sm font-medium mt-2 mb-1 md:mt-3 md:mb-2;
+}
+.markdown-content h6 {
+  @apply text-xs font-medium mt-2 mb-1 uppercase md:mt-3 md:mb-2;
+}
+
+/* Paragraphs */
+.markdown-content p {
+  @apply text-neutral-500 leading-relaxed mb-3 md:mb-4;
+}
+
+/* Lists */
+.markdown-content ul {
+  @apply list-disc list-outside ml-4 pl-2 md:ml-6 md:pl-2;
+}
+.markdown-content li {
+  @apply text-neutral-500 leading-relaxed;
+}
+.markdown-content ol {
+  @apply  ml-3 md:ml-5;
+}
+
+/* Code Blocks - Light Theme */
+.markdown-content pre {
+  @apply bg-gray-50 border border-gray-200 p-2 md:p-4 rounded-lg overflow-x-auto text-xs md:text-sm shadow-sm;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  line-height: 1.6;
+  /* Ensure good contrast and readability */
+  color: #374151; /* gray-700 */
+  margin: 1rem 0;
+  /* Mobile-specific constraints */
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .markdown-content pre {
+    margin: 1.5rem 0;
+  }
+}
+
+/* Better scrollbar for code blocks */
+.markdown-content pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.markdown-content pre::-webkit-scrollbar-track {
+  background: #f1f5f9; /* slate-100 */
+  border-radius: 4px;
+}
+
+.markdown-content pre::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 4px;
+}
+
+.markdown-content pre::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}
+
+/* Inline code */
+.markdown-content code:not(pre code) {
+  @apply bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-medium;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+}
+
+/* Code inside pre blocks should inherit Shiki styling */
+.markdown-content pre code {
+  @apply bg-transparent text-inherit p-0 rounded-none;
+  font-family: inherit;
+}
+
+/* Links - Modern, subtle approach following UI best practices */
+.markdown-content a {
+  @apply text-gray-700 dark:text-gray-200 no-underline transition-all duration-200;
+  position: relative;
+  /*padding: 1px 2px;*/
+  border-radius: 3px;
+}
+
+/* Fix link padding in lists to prevent bullet misalignment */
+.markdown-content li a {
+  padding: 0 1px;
+}
+
+.markdown-content a:hover {
+  @apply bg-gray-100 dark:bg-gray-800;
+  text-decoration: underline;
+  text-decoration-color: #9ca3af; /* gray-400 */
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.markdown-content a:focus {
+  @apply outline-2 outline-blue-500 outline-offset-2;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.markdown-content a:visited {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+  @apply border-l-4 border-gray-500 pl-3 italic text-gray-600 md:pl-4;
+}
+
+/* Images - Responsive */
+.markdown-content img {
+  @apply max-w-full h-auto;
+}
+
+/* Tables - Mobile responsive */
+.markdown-content table {
+  @apply block overflow-x-auto whitespace-nowrap md:table md:whitespace-normal;
+  max-width: 100%;
+}
+
+/* Ensure all wide content is contained */
+.markdown-content * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Sidebar Styles - Light Theme */
+@layer components {
+  .sidebar-wrapper {
+    @apply fixed left-0 top-0 h-full w-80 bg-gray-50 border-r border-gray-200 text-gray-800 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 shadow-lg;
+  }
+  
+  .sidebar-wrapper.mobile-open {
+    @apply translate-x-0;
+  }
+  
+  @media (min-width: 768px) {
+    .sidebar-wrapper {
+      @apply translate-x-0 w-72 shadow-none;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+  }
+  
+  .sidebar-nav {
+    @apply h-full overflow-y-auto;
+  }
+  
+  .sidebar-content {
+    @apply p-6 space-y-6;
+  }
+  
+  .sidebar-group {
+    @apply space-y-3;
+  }
+  
+  .sidebar-group-title {
+    @apply text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 border-b border-gray-200 pb-2;
+  }
+  
+  .sidebar-links {
+    @apply space-y-1;
+  }
+  
+  .sidebar-link {
+    @apply block px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200;
+  }
+  
+  .sidebar-link.current {
+    @apply text-blue-700 bg-blue-50 font-medium border-l-2 border-blue-500 pl-2;
+  }
+  
+  /* Mobile toggle button */
+  .mobile-sidebar-toggle {
+    @apply fixed top-4 left-4 z-50 p-2 bg-white text-gray-700 rounded-md shadow-md border border-gray-200 hover:bg-gray-50;
+  }
+  
+  .hamburger-icon {
+    @apply block w-6 h-6 relative;
+  }
+  
+  .hamburger-icon span {
+    @apply block absolute h-0.5 w-6 bg-current transform transition duration-200;
+  }
+  
+  .hamburger-icon span:nth-child(1) {
+    @apply top-1;
+  }
+  
+  .hamburger-icon span:nth-child(2) {
+    @apply top-3;
+  }
+  
+  .hamburger-icon span:nth-child(3) {
+    @apply top-5;
+  }
+  
+  /* Layout with sidebar */
+  .layout-with-sidebar {
+    @apply flex min-h-screen bg-white;
+  }
+  
+  .main-content-with-sidebar {
+    @apply flex-1 bg-white min-w-0; /* min-w-0 prevents flex item from overflowing */
+  }
+  
+  @media (min-width: 768px) {
+    .main-content-with-sidebar {
+
+    }
+  }
+  
+  /* Additional polish for light theme - desktop only */
+  @media (min-width: 768px) {
+    .sidebar-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1), transparent);
+    }
+  }
+  
+  /* Responsive improvements */
+  @media (max-width: 767px) {
+    .sidebar-wrapper {
+      @apply backdrop-blur-sm;
+      background-color: rgba(249, 250, 251, 0.98);
+      /* Create backdrop overlay for click-to-close */
+    }
+    
+    .sidebar-wrapper::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .sidebar-wrapper.mobile-open::before {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    /* Sidebar content area */
+    .sidebar-nav {
+      position: relative;
+      z-index: 1;
+      background: rgba(249, 250, 251, 1);
+      height: 100vh;
+      width: 320px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Improve touch targets on mobile */
+    .sidebar-link {
+      @apply py-3 px-4 text-base;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}

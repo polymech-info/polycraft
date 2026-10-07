@@ -1,0 +1,73 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+import Wrapper from "@/components/containers/Wrapper.astro";
+import { LANGUAGES_PROD } from "config/config.js";
+import config from "config/config.json";
+import { getCollection } from "astro:content";
+import StoreEntries from "@/components/store/StoreEntries.astro";
+import CtaOne from "@/components/cta/CtaOne.astro";
+import { group_by_path } from "@polymech/astro-base/model/component.js";
+
+const view = "library";
+const items = await getCollection("library");
+const locale = Astro.currentLocale;
+const store = `/${locale}/${view}/`;
+
+export function getStaticPaths() {
+  const all: unknown[] = [];
+  LANGUAGES_PROD.forEach((lang) => {
+    all.push({
+      params: {
+        locale: lang,
+        path: "home",
+      },
+    });
+  });
+  return all;
+}
+const groups = await group_by_path(items, locale);
+const frontmatter = {
+  title: "Store",
+  description: "Store",
+  keywords: "Store",
+  image: {
+    src: config.pages.home.hero,
+    url: config.pages.home.hero,
+    alt: config.metadata.keywords,
+  },
+};
+---
+
+<BaseLayout frontmatter={frontmatter}>
+  <Wrapper variant="standard" class="py-4">
+    <CtaOne />
+    <section>
+      <div class="py-2 space-y-2">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+    {
+      Object.keys(groups).map((relKey) => (
+        <section>
+          <h3 aria-hidden="true" class="p-4 text-xs space-x-8 text-neutral-600">
+            {relKey}
+          </h3>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+            {groups[relKey].map((post) => (
+              <StoreEntries
+                key={post.id}
+                url={store + post.id}
+                title={post.data.title}
+                price={post.data.price}
+                type={post.data.type}
+                alt={post.data.title}
+                model={post.data}
+              />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </Wrapper>
+</BaseLayout>

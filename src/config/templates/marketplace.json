@@ -1,0 +1,28 @@
+{
+    "templates": {
+        "productDescription": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Write a clear and concise product description that highlights the key features and benefits. Include technical specifications where relevant.",
+            "filters": "code"
+        },
+        "pricingAnalysis": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Analyze the market value and suggest a competitive price range for this product. Consider materials, manufacturing costs, and market positioning.",
+            "filters": "code"
+        },
+        "marketResearch": {
+            "router": "openai",
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Provide market research insights including target audience, competitors, and market trends. Format as Markdown sections.",
+            "filters": "code"
+        }
+    }
+} 

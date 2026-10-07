@@ -1,0 +1,14 @@
+{
+  "model": "openai/gpt-4.5-preview",
+  "messages": [
+    {
+      "role": "user",
+      "content": "## Image to text\r\n\r\n- [ ] options, free, images to text (not OCR)\r\n- [ ] as markdown table with links, prices, specs/features, language\r\n- [ ] check commercial and opensource models (huggingface)\r\n"
+    },
+    {
+      "role": "user",
+      "content": "USER Preferences : # Preferences\r\n\r\n- all documents in Markdown, insert new line after headings, and before code sections\r\n- standard chapters: brief, references (with links)\r\n- dont comment, just the content\r\n- add example code\r\n- we use tailwindcss\r\n- avoid React\r\n- if applicable, refer to libraries (Typescript ESM compatible)\r\n"
+    }
+  ],
+  "tools": []
+}

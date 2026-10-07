@@ -1,0 +1,100 @@
+---
+import JSX from "./jsx.astro"
+import { sync as read } from "@polymech/fs/read"
+import { sync as exists } from "@polymech/fs/exists"
+
+import { run, OptionsSchema, IKBotTask } from "@polymech/kbot-d";
+
+import { createMarkdownComponent } from "@/base/index.js";
+
+const { ...rest } = Astro.props;
+const promptContent = ((await Astro.slots.render("default")) as string) || "";
+
+export interface Props extends IKBotTask {
+  language?: string;
+  clazz?: string;
+  cache?: boolean;
+  disabled?: boolean;
+  template?: string;
+  renderer?: string;
+}
+
+export const template_simple = () => {
+  return {
+    router: "openai",
+    model: "gpt-4o",
+    preferences: "none",
+    mode: "completion",
+  };
+}
+
+export const template_code_simple = () => {
+  return {
+    preferences: "none",
+    mode: "completion",
+  };
+}
+
+export const template_research = () => {
+  return {
+    router: "openai",
+    model: "gpt-4.5-preview",
+    preferences: "none",
+    mode: "completion",
+  }
+}
+
+export const templates = {
+  simple: template_simple,
+  code_simple: template_code_simple,
+  research: template_research,
+}
+
+const template = templates[rest.template || "simple"]
+const options = OptionsSchema().parse({
+  prompt: promptContent,
+  ...template(),
+  ...rest,
+} as Props);
+
+let result: string | unknown[] = [];
+if (options.cache && exists(options.dst) && !options.disabled) {
+  result = [read(options.dst)];
+} else {
+  if (options.disabled) {
+    result = ["<div>Disabled</div>"];
+  } else {
+    result = await run(options);
+  }
+}
+let Content;
+const renderers = {
+  jsx: async (content: string) => {},
+  html: async (content: string) => {},
+  md: async (str: string) => {
+    return createMarkdownComponent(str)
+  },
+  astro: async (content: string) => {
+   // const compiled = await compile(content)
+   // const moduleUrl = `data:text/javascript;charset=utf-8,${encodeURIComponent(compiled)}`
+  //  const module = await import(moduleUrl)
+  //  return module.default
+  },
+};
+const content = result[0];
+const renderType = rest.renderer || "md";
+const renderer = renderers[renderType];
+
+Content = await renderer(content)
+---
+
+<div>
+  {
+    !rest.disabled && renderType === "md" ? (<Content />) : (<p>Failed to render MD : {content.substr(0,100)}</p>)
+  }
+  {
+    !rest.disabled && (renderType === "jsx" || renderType === "html") && (
+      <JSX markup={content} />
+    ) 
+  }
+</div>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Wrapper from "@/components/containers/Wrapper.astro";
+---
+<BaseLayout>
+  <section>
+    <Wrapper>
+    <div class="grid sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 text-neutral-500 p-4">
+        <slot />
+    </div>
+  </Wrapper>
+  </section>
+</BaseLayout>

@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import { IHowto } from "@/model/howto/howto.js";
+const locale = Astro.currentLocale;
+const items = await getCollection('howtos')
+const { category } = Astro.props;
+
+// Group howtos by category
+const categories = items.reduce((acc: Record<string, IHowto[]>, storeItem: any) => {
+  const category = storeItem.data?.item?.category?.label || 'uncategorized';
+  if(category === 'uncategorized') {
+    return acc
+  }
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(storeItem.data.item);
+  return acc;
+}, {});
+
+const categoryKeys = Object.keys(categories).sort();
+---
+
+<button data-drawer-target="howto-sidebar" data-drawer-toggle="howto-sidebar" aria-controls="howto-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+    <span class="sr-only">Translate.howto.sidebar.open</span>
+    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+    </svg>
+ </button>
+ 
+ <aside id="howto-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 ml-4" aria-label="Howtos Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{"d"}</h3>
+        </div>
+        <ul class="space-y-2 font-medium">
+            <li>
+                <a href="/howtos/" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6.992 0H8.914V9H6.992V0ZM4.148 3.84H10.758V5.76H4.148V3.84Z"/>
+                    </svg>
+                    <span class="flex-1 ms-3 whitespace-nowrap">{"allCategories"}</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 ms-2 text-xs font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">{items.length}</span>
+                </a>
+            </li>
+            {
+            categoryKeys.map((category) => (
+                <li key={category}>
+                    <div class="mt-4 mb-2">
+                        <a href={`/${locale}/howto-category/${category.toLowerCase()}`} class="flex items>
+                        <h4 class="text-md font-semibold text-gray-700 dark:text-gray-300 capitalize">{category}</h4>
+                        </a>
+                    </div>                    
+                </li>
+            ))
+        }
+        </ul>
+    </div>
+</aside>

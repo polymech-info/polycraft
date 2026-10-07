@@ -1,0 +1,58 @@
+---
+image: "/users/mnartist/Compression%20Oven%2002.jpg"
+title: "Precious Plastic - User : MNartist"
+description: ""
+keywords: "Precious Plastic, Precious Plastic MNartist, Precious Plastic machine-builder"
+enabled: ""
+type: "machine-builder"
+short: "Local artist and maker that is able to do a little bit of every thing"
+continent: "North America"
+country: "United States of America (the)"
+censored: "No"
+area: "Minnesota / Township of Buse - US-MN - 56537"
+---
+<br />
+<b>Brief</b>: [[short]] <br />
+<b>Censored</b>: [[censored]] <br />
+<b>Continent</b>: [[continent]] <br />
+<b>Country</b>: [[country]] <br />
+<b>Area</b>: [[area]] <br />
+<b>Created</b>: 2/24/2021 <br />
+<b>Modified</b>: 2/24/2021 <br />
+<b>Last Active</b>: 2/24/2021 <br />
+<p style="text-align:center"> <a href="/users/mnartist/Compression%20Oven%2002.jpg"><img loading=lazy src="/users/mnartist/Compression%20Oven%2002.jpg" /></a></p>
+<br />
+[[ page.description ]]
+<h4> Links</h4>
+<a href="mailto:cjzachmann@gmail.com">Email - cjzachmann@gmail.com</a><br />
+<a href="https://www.patreon.com/one_army">sponsor the work - www.patreon.com/one_army</a>
+<h5>Services</h5>
+<ul>
+  <li>Welding</li>
+  <li>Assembling</li>
+  <li>Machining</li>
+  <li>Electronics</li>
+  <li>Molds</li>
+</ul>
+<br />
+<a href="https://www.google.com/maps/search/46.2813,-96.1078">Get Directions</a>
+<div class="step-images">
+  <div class="row">
+    <div class="col-sm">
+      <a href="/users/mnartist/Barbara-Honer-and-Carl-Zachmann-plastic-heros-1320x990.jpg">
+        <img loading=lazy class="step-image" src="/users/mnartist/Barbara-Honer-and-Carl-Zachmann-plastic-heros-1320x990.jpg" />
+      </a>
+    </div>
+    <br />
+    <div class="col-sm">
+      <a href="/users/mnartist/Compression Oven 02.jpg">
+        <img loading=lazy class="step-image" src="/users/mnartist/Compression Oven 02.jpg" />
+      </a>
+    </div>
+    <br />
+    <br />
+    <br />
+  </div>
+</div>
+---
+---

@@ -1,0 +1,1 @@
+osr-sync zip --logLevel=debug --clear=false --source='./dist' --target='./dist.zip' --debug=false --profile="./sync-deploy.json"

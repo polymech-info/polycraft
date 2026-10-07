@@ -1,0 +1,339 @@
+{
+  "_createdBy": "gus-merckel",
+  "mentions": [],
+  "_deleted": false,
+  "fileLink": "",
+  "slug": "cut-out-shapes-out-of-plastic-sheets-with-a-cnc-",
+  "_modified": "2023-10-27T18:09:36.519Z",
+  "previousSlugs": [
+    "cut-out-shapes-out-of-plastic-sheets-with-a-cnc-"
+  ],
+  "_created": "2023-08-23T18:20:09.098Z",
+  "description": "In this how to, I will show you our process to cut HDPE Sheets using a X-Carve CNC.\n\nHere is the full video in spanish with subtitles https://www.youtube.com/watch?v=4LrrFz802To ",
+  "votedUsefulBy": [
+    "sigolene",
+    "mattia",
+    "uillinoispreciousplastics"
+  ],
+  "creatorCountry": "mx",
+  "total_downloads": 0,
+  "title": "Cut out shapes out of plastic sheets with a CNC ",
+  "time": "< 5 hours",
+  "files": [],
+  "difficulty_level": "Medium",
+  "_id": "038gj_gLjiyYknBEjDeI",
+  "tags": [
+    "HDPE"
+  ],
+  "total_views": 232,
+  "_contentModifiedTimestamp": "2023-08-23T18:20:09.098Z",
+  "cover_image": {
+    "name": "IMG_20200605_142311.jpg",
+    "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2F038gjWgLjiyYknBEjDeI%2FIMG_20200605_142311.jpg?alt=media&token=c272c174-1adc-45af-967b-771adce7295d",
+    "type": "image/jpeg",
+    "fullPath": "uploads/howtos/038gjWgLjiyYknBEjDeI/IMG_20200605_142311.jpg",
+    "updated": "2021-04-05T15:09:00.605Z",
+    "size": 124661,
+    "timeCreated": "2021-04-05T15:09:00.605Z",
+    "contentType": "image/jpeg"
+  },
+  "comments": [],
+  "moderatorFeedback": "",
+  "steps": [
+    {
+      "title": "Measure the plastic sheet",
+      "text": "For this step we need to measure our plastic sheet: Height, Width and Thickness.  Our X-Carve machine works with the CAM Software EASEL, for me, the easiest software for CNC milling out there. \n\nThe cool thing about Easel (https://easel.inventables.com/) is that you can \"simulate\" your actual material and THEY EVEN HAVE HDPE 2-Colors in their cutting material lists!!\n\n\n",
+      "images": [
+        {
+          "fullPath": "uploads/howtos/pbo0Pe44aTngvlD04kGf/1.jpg",
+          "name": "1.jpg",
+          "size": 74095,
+          "type": "image/jpeg",
+          "timeCreated": "2021-03-26T19:42:05.766Z",
+          "contentType": "image/jpeg",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F1.jpg?alt=media&token=293d733d-05a5-494a-9340-47f4564f1939",
+          "updated": "2021-03-26T19:42:05.766Z",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/1.jpg",
+          "alt": "1.jpg"
+        },
+        {
+          "contentType": "image/jpeg",
+          "timeCreated": "2021-03-26T19:42:05.669Z",
+          "updated": "2021-03-26T19:42:05.669Z",
+          "size": 69665,
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTgnvlD04kGf%2F2.jpg?alt=media&token=004f50f1-97ac-4df4-9ba9-f463aa4cba3a",
+          "fullPath": "uploads/howtos/pbo0Pe44aTngvlD04kGf/2.jpg",
+          "name": "2.jpg",
+          "type": "image/jpeg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/2.jpg",
+          "alt": "2.jpg"
+        }
+      ],
+      "_animationKey": "unique1"
+    },
+    {
+      "text": "Using the CNC clamps from the X-Carve, secure the sheet to the table, ",
+      "_animationKey": "unique2",
+      "images": [
+        {
+          "updated": "2021-03-26T19:42:06.249Z",
+          "size": 55544,
+          "fullPath": "uploads/howtos/pbo0Pe44aTngvlD04kGf/3.jpg",
+          "timeCreated": "2021-03-26T19:42:06.249Z",
+          "name": "3.jpg",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F3.jpg?alt=media&token=0b9c1914-1c75-429e-b34a-1e2b3706edef",
+          "contentType": "image/jpeg",
+          "type": "image/jpeg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/3.jpg",
+          "alt": "3.jpg"
+        }
+      ],
+      "title": "Secure sheet "
+    },
+    {
+      "title": "Choosing a file to cut ",
+      "text": "Now we go to our illustrator, such as Inkscape to design a vector file or download and open source one frome https://thenounproject.com/.\n\nWe download the SVG file, which is an open source vector format and import it to Easel. \n",
+      "images": [
+        {
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F4.jpg?alt=media&token=1cd2d49d-9335-4bb1-ac2a-e625322ca604",
+          "contentType": "image/jpeg",
+          "timeCreated": "2021-03-26T19:42:06.727Z",
+          "updated": "2021-03-26T19:42:06.727Z",
+          "name": "4.jpg",
+          "size": 42952,
+          "type": "image/jpeg",
+          "fullPath": "uploads/howtos/pbo0Pe44aTgnvlD04kGf/4.jpg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/4.jpg",
+          "alt": "4.jpg"
+        },
+        {
+          "size": 69255,
+          "fullPath": "uploads/howtos/pbo0Pe44aTgnvlD04kGf/5.jpg",
+          "updated": "2021-03-26T19:42:06.833Z",
+          "timeCreated": "2021-03-26T19:42:06.833Z",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F5.jpg?alt=media&token=7cca786a-7d47-43bb-900b-b8d101c276b4",
+          "name": "5.jpg",
+          "contentType": "image/jpeg",
+          "type": "image/jpeg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/5.jpg",
+          "alt": "5.jpg"
+        }
+      ],
+      "_animationKey": "unique3"
+    },
+    {
+      "text": "Now with the file we can choose the width we want to carve/cut and then we go to cut and start the wizzard:\n- We check that the sheet is fixed.\n- We also specify the cutting bit, we are using a 1/8 flat flute bit. \n- We tell the machine where the coordinate 0-0 is, which we always choose as the down left corner.\n- We raise the bit, turn on the Router!!!\n\nAND PUM THE MAGIC BEGINS!!",
+      "title": "Follow the cutting Wizzard",
+      "images": [
+        {
+          "timeCreated": "2021-03-26T19:42:07.493Z",
+          "size": 72226,
+          "fullPath": "uploads/howtos/pbo0Pe44aTngvlD04kGf/6.jpg",
+          "updated": "2021-03-26T19:42:07.493Z",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F6.jpg?alt=media&token=ba7195dd-7771-435f-a188-057457697332",
+          "contentType": "image/jpeg",
+          "type": "image/jpeg",
+          "name": "6.jpg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/6.jpg",
+          "alt": "6.jpg"
+        },
+        {
+          "fullPath": "uploads/howtos/pbo0Pe44aTgnvlD04kGf/7.jpg",
+          "size": 52424,
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F7.jpg?alt=media&token=a3d5820c-cfe2-484e-8f76-f861ab8b756d",
+          "contentType": "image/jpeg",
+          "type": "image/jpeg",
+          "timeCreated": "2021-03-26T19:42:07.308Z",
+          "updated": "2021-03-26T19:42:07.308Z",
+          "name": "7.jpg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/7.jpg",
+          "alt": "7.jpg"
+        },
+        {
+          "fullPath": "uploads/howtos/pbo0Pe44aTngvlD04kGf/8.jpg",
+          "name": "8.jpg",
+          "type": "image/jpeg",
+          "timeCreated": "2021-03-26T19:42:07.346Z",
+          "size": 55264,
+          "contentType": "image/jpeg",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTngvlD04kGf%2F8.jpg?alt=media&token=1c9816d7-3a99-4f41-8d3c-acc2670240f6",
+          "updated": "2021-03-26T19:42:07.346Z",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/8.jpg",
+          "alt": "8.jpg"
+        }
+      ],
+      "_animationKey": "uniquenisc2v"
+    },
+    {
+      "text": "You take now your glasses or object and postprocess them and of course show it to your friends, family and so on.\n\n\n",
+      "images": [
+        {
+          "fullPath": "uploads/howtos/pbo0Pe44aTgnvlD04kGf/9.jpg",
+          "contentType": "image/jpeg",
+          "timeCreated": "2021-03-26T19:42:08.147Z",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2Fpbo0Pe44aTgnvlD04kGf%2F9.jpg?alt=media&token=4dcfe37d-e1ad-41e5-a590-40b4c37c5e1a",
+          "name": "9.jpg",
+          "updated": "2021-03-26T19:42:08.147Z",
+          "type": "image/jpeg",
+          "size": 82214,
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/9.jpg",
+          "alt": "9.jpg"
+        }
+      ],
+      "_animationKey": "uniquesgl34",
+      "title": "Post-production and show case"
+    },
+    {
+      "_animationKey": "uniquem4y0yi",
+      "title": "Hack it and try it yourself",
+      "text": "You can try this project with other types of CNC machines, even manual Routers or manual saw, as I did on this video: https://youtu.be/gxkcffQD3eQ, but the important thing is that you share what you do and help this community to grow!!!\n\nShare your ideas and comments!",
+      "images": [
+        {
+          "contentType": "image/jpeg",
+          "timeCreated": "2021-04-05T15:09:01.445Z",
+          "fullPath": "uploads/howtos/038gjWgLjiyYknBEjDeI/IMG_20200605_142311.jpg",
+          "type": "image/jpeg",
+          "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/onearmyworld.appspot.com/o/uploads%2Fhowtos%2F038gjWgLjiyYknBEjDeI%2FIMG_20200605_142311.jpg?alt=media&token=f94152ff-f923-4054-a3ad-d8ec588856fa",
+          "size": 124661,
+          "updated": "2021-04-05T15:09:01.445Z",
+          "name": "IMO_20200605_142311.jpg",
+          "src": "/resources/howtos/cut-out-shapes-out-of-plastic-sheets-with-a-cnc-/IMG_20200605_142311.jpg",
+          "alt": "IMG_20200605_142311.jpg"
+        }
+      ]
+    }
+  ],
+  "moderation": "accepted",
+  "user": {
+    "_modified": "2024-01-08T13:28:33.484Z",
+    "_id": "gus-merckel",
+    "subType": "mix",
+    "moderation": "accepted",
+    "_deleted": false,
+    "verified": false,
+    "type": "workspace",
+    "location": {
+      "lat": 19.3935,
+      "lng": -99.1656
+    },
+    "_created": "2024-01-08T13:28:33.484Z",
+    "geo": {
+      "latitude": 19.3935,
+      "lookupSource": "coordinates",
+      "longitude": -99.1656,
+      "localityLanguageRequested": "en",
+      "continent": "North America",
+      "continentCode": "NA",
+      "countryName": "Mexico",
+      "countryCode": "MX",
+      "principalSubdivision": "Ciudad de Mexico",
+      "principalSubdivisionCode": "MX-COX"
+�": "Mexico City",
+      "locality": "Benito Juarez",
+      "postcode": "03103",
+      "plusCode": "76F29RVM+CQ",
+      "localityInfo": {
+        "administrative": [
+          {
+            "name": "Meqxico",
+            "description": "country in North America",
+            "isoName": "Mexico",
+            "order": 2,
+            "adminLevel": 2,
+            "isoCode": "MX",
+            "wikidataId": "Q96",
+            "geonameId": 3996063
+          },
+          {
+            "name": "Mexico City",
+            "description": "capital and largest city of Mexico",
+            "order": 5,
+            "adminLevel": 4,
+            "wikidataId": "Q1489",
+            "geonameId": 3530597
+          },
+          {
+            "name": "Ciudad de Mexico",
+            "description": "capital and largest city of Mexico",
+            "isoName": "Ciudad de Mexico",
+            "order": 6,
+            "adminLevel": 4,
+            "isoCode": "MX-CMX",
+            "wikidataId": "Q1489",
+            "geonameId": 3527646
+          },
+          {
+            "name": "Benito Juarez",
+            "description": "territorial demarcation of the Mexico City in Mexico",
+            "order": 7,
+            "adminLevel": 6,
+            "wikidataId": "Q2356998",
+            "geonameId": 3827406
+          }
+        ],
+        "informative": [
+          {
+            "name": "North America",
+            "description": "continent and northern subcontinent of the Americas",
+            "isoName": "North America",
+            "order": 1,
+            "isoCode": "NA",
+            "wikidataId": "Q49",
+            "geonameId": 6255149
+          },
+          {
+            "name": "America/Mexico_City",
+            "description": "time zone",
+            "order": 3
+          },
+          {
+            "name": "Greater Mexico City",
+            "description": "geographical object",
+            "order": 4,
+            "wikidataId": "Q665894"
+          },
+          {
+            "name": "03103",
+            "description": "postal code",
+            "order": 8
+          }
+        ]
+      }
+    },
+    "data": {
+      "urls": [
+        {
+          "name": "Email",
+          "url": "mailto:gustavomerckel@gmail.com"
+        },
+        {
+          "name": "Facebook",
+          "url": "https://www.facebook.com/pl%c3%a1stico-chido-110888520718193"
+        },
+        {
+          "name": "sponsor the work",
+          "url": "https://www.patreon.com/one_army"
+        }
+      ],
+      "description": "Plástico Chido builds and modifies the PP machines, and also experiments with CNC and Laser Cut",
+      "services": [
+        {
+          "welding": false,
+          "assembling": false,
+          "machining": false,
+          "electronics": false,
+          "molds": false
+        }
+      ],
+      "title": "Plástico Chido",
+      "images": []
+    },
+    "detail": {
+      "services": [],
+      "urls": []
+    }
+  },
+  "category": {
+    "label": "uncategorized"
+  }
+}

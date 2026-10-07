@@ -1,0 +1,81 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import Item from "@/components/howtos/ListItem.astro";
+import Wrapper from "@/components/containers/Wrapper.astro";
+import Sidebar from "@polymech/astro-base/components/sidebar/Sidebar.astro";
+import MobileToggle from "@polymech/astro-base/components/sidebar/MobileToggle.astro";
+import { getSidebarConfig } from "@polymech/astro-base/config/sidebar";
+import { getHowtoNavigation } from "@/model/howto/navigation.js";
+
+const all = await getCollection("howtos");
+const locale = Astro.currentLocale || "en";
+const { category } = Astro.props;
+const filtered = all.filter(
+    (item) => item.data.item.category?.label.toLowerCase() === category,
+);
+
+const sidebarConfig = getSidebarConfig();
+const pageNavigation = getHowtoNavigation(all, undefined, category, locale);
+
+// Create a title object that mimics a MarkdownHeading for the sidebar
+// Since this is a category list, we don't have deep content headings
+const headings = [
+    {
+        depth: 1,
+        slug: "top",
+        text: category
+            ? `${category.charAt(0).toUpperCase() + category.slice(1)} Guides`
+            : "Guides",
+    },
+];
+
+// Capitalize category for display
+const displayCategory = category
+    ? category.charAt(0).toUpperCase() + category.slice(1)
+    : "";
+---
+
+<BaseLayout>
+    <div class="layout-with-sidebar">
+        <!-- Mobile Toggle -->
+        <MobileToggle />
+
+        <!-- Sidebar -->
+        <div class="sidebar-wrapper">
+            <Sidebar
+                config={sidebarConfig}
+                currentUrl={Astro.url}
+                headings={headings}
+                pageNavigation={pageNavigation}
+            />
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content-with-sidebar">
+            <Wrapper>
+                <section>
+                    <h1 class="text-3xl font-bold mb-6 px-4">
+                        {displayCategory} Guides
+                    </h1>
+                    <div
+                        class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4"
+                    >
+                        {
+                            filtered.map((item) => (
+                                <Item
+                                    url={`/${locale}/howtos/${item.id}`}
+                                    title={item.data.title}
+                                    price={item.data.price}
+                                    type={item.data.type}
+                                    alt={item.data.title}
+                                    model={item.data}
+                                />
+                            ))
+                        }
+                    </div>
+                </section>
+            </Wrapper>
+        </main>
+    </div>
+</BaseLayout>

@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../polymech-astro"
+		},
+		{
+			"path": "../polymech-mono/packages"
+		},
+		{
+			"path": "D:/desktop/osr/osr-machines"
+		},
+		{
+			"path": "X:/products"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.json.liquid": "json",
+			"*.yaml.liquid": "yaml",
+			"*.md.liquid": "markdown",
+			"*.js.liquid": "liquid-javascript",
+			"*.css.liquid": "liquid-css",
+			"*.scss.liquid": "liquid-scss",
+			"*.embeddedhtml": "html",
+			"*.cps": "javascript",
+			"*.h": "c",
+			"XASM2INT.C": "cpp",
+			"XASM.H": "cpp",
+			"TNC_f1.H": "cpp"
+		}
+	}
+}

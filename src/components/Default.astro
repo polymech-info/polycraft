@@ -1,0 +1,7 @@
+---
+import { createComponent } from "astro/runtime/server/astro-component.js";
+import { renderTemplate, unescapeHTML } from "astro/runtime/server/index.js";
+const DefaultComponent = createComponent(() => renderTemplate( unescapeHTML(`<div />`), []));
+---
+<DefaultComponent />
+

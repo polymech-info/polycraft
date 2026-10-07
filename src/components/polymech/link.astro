@@ -1,0 +1,11 @@
+---
+const { href, className } = Astro.props;
+---
+<li>
+  <a
+    href={href}
+    class={className}
+  >
+    <slot />
+  </a>
+</li>

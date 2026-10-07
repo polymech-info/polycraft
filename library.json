@@ -1,0 +1,91 @@
+{
+    "sheetpress": [
+        "products/sheetpress/cassandra-light",
+        "products/sheetpress/cassandra-mini",
+        "products/sheetpress/components/sprcb-650",
+        "products/sheetpress/components/sprcb-650-rc2",
+        "products/sheetpress/components/sprcb-650-light",
+        "products/sheetpress/cassandra-edcsm",
+        "products/sheetpress/cassandra-edczmax-rc2"
+    ],
+    "injectors": [
+        "products/injection/katbot-pro-xl",
+        "products/injection/katbot-pro-mega-beta",
+        "products/injection/myriad-spring",
+        "products/injection/elena-zmax",
+        "products/injection/elena-zmax-rc1",
+        "products/injection/elena-zmax-motor-mod3"
+    ],
+    "systems": [
+        "products/extrusion/systems/filament",
+        "products/extrusion/systems/pelletizer"
+    ],
+    "extruders": [
+        "products/extrusion/components/202_FilamentHousing",
+        "products/extrusion/components/1100_Moulds/130x130x90-M10-L36",
+        "products/extrusion/components/101_lucy",
+        "products/extrusion/components/102_lucy-mini",
+        "products/extrusion/lydia-mini",
+        "products/extrusion/lydia-v3.5",
+        "products/extrusion/lydia-v4.5",
+        "products/extrusion/lydia-v4.6-ex",
+        "products/extrusion/lydia-v4.8",
+        "products/extrusion/components/102_lucy-mini",
+        "products/extrusion/lydia-print-head-v3"
+    ],
+    "extruders-retail": [
+        "products/extrusion-ext/1600899413061"
+    ],
+    "shredders": [
+        "products/shredder-ext/Obelix-XM-300",
+        "products/shredder-ext/Obelix-XM-500",
+        "products/shredder/idefix",
+        "products/shredder/obelix",
+        "products/shredder/components/shredder_v31-light",
+        "products/shredder/asterix-pp",
+        "products/shredder/asterix-sm",
+        "products/shredder/asterix-sm-morren"
+    ],
+    "site-dev": [
+        "products/extrusion/systems/filament",
+        "products/extrusion/systems/pelletizer",
+        "products/extrusion/components/202_FilamentHousing",
+        "products/extrusion/components/1100_Moulds/130x130x90-M10-L36",
+        "products/extrusion/components/101_lucy",
+        "products/extrusion/components/102_lucy-mini",
+        "products/sheetpress/components/sprcb-650-rc2",
+        "products/sheetpress/components/sprcb-450-rc1",
+        "products/sheetpress/cassandra-light",
+        "products/sheetpress/cassandra-mini",
+        "products/sheetpress/cassandra-edc-450-rc1",
+        "products/sheetpress/cassandra-edczmax-rc2",
+        "products/sheetpress/cassandra-edczmax-rc2-1150ex",
+        "products/injection/elena-zmax-rc1",
+        "products/injection/katbot-pro-xl",
+        "products/extrusion/lydia-mini",
+        "products/extrusion/lydia-v3.5",
+        "products/extrusion/lydia-v4.5",
+        "products/shredder/idefix",
+        "products/shredder/obelix",
+        "products/shredder/components/shredder_v31-light"
+    ],
+    "production": [
+        "products/sheetpress/cassandra-edczmax-rc2-1150ex"
+    ],
+    "site-prod": [
+        "products/sheetpress/cassandra-edczmax-rc2",
+        "products/sheetpress/cassandra-edczmax-rc2-1150ex",
+        "products/injection/katbot-pro-xl",
+        "products/extrusion/lydia-v3.5",
+        "products/extrusion/lydia-v4.5",
+        "products/injection/elena-zmax-rc1",
+        "products/components/shared/electronics/enclosures/vintage-vertical-edc"
+    ],
+    "site": [
+        "products/sheetpress/cassandra-edczmax-rc2",
+        "products/injection/katbot-pro-xl",
+        "products/injection/elena-zmax-rc1",
+        "products/extrusion/lydia-v3.5",
+        "products/extrusion/lydia-v4.5"
+    ]
+}

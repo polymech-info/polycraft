@@ -1,0 +1,22 @@
+---
+import { DEFAULT_IMAGE_URL } from 'config/config.js'
+import { Picture } from "imagetools/components"
+import { image_url } from "@/base/media.js"
+
+interface SafeImageProps {
+    src: string
+    alt: string
+    fallback?: string
+    [propName: string]: any
+}
+
+const {
+    src,
+    alt,
+    fallback = DEFAULT_IMAGE_URL,
+    ...rest
+} = Astro.props as SafeImageProps
+
+const srcSafe = await image_url(src, fallback)
+---
+<Picture src={srcSafe} alt={alt} {...rest} />

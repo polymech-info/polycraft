@@ -1,0 +1,31 @@
+---
+import path from "node:path"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Wrapper from "@/components/containers/Wrapper.astro"
+import { Img, Picture } from "imagetools/components"
+import { getCollection } from "astro:content"
+import KBot from "@/components/polymech/kbot.astro"
+import Image from "@/components/polymech/image.astro"
+const locale = Astro.currentLocale
+const store = `${locale}/store/`
+const src = `./public/products/overview-3.jpg`
+const abs = path.resolve(src)
+---
+
+<BaseLayout>
+    <Wrapper variant="standard" class="py-4">
+        <section>
+            <div class="py-2 space-y-2">
+                <div class="grid md:grid-cols-1 lg:grid-cols-1 gap-4" >
+                    <Image src={abs} 
+                        alt="Overview"
+                        sizes={"(min-width: 1024px) 1024px, 1024vw"}
+                        format={"png"}
+                        breakpoints={[800,1200]}
+                        />
+                </div>
+            </div>
+        </section>        
+        </Wrapper
+    ></BaseLayout
+>

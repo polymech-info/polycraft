@@ -1,0 +1,67 @@
+{
+    "options": {
+        "keywords": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Return a list of max. 10 keywords that can be used for SEO purposes, separated by commas (dont comment, just the list) : "
+        },
+        "brief": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Create a concise description for SEO meta (around 150-160 characters) from the text below. \n  Disregard any links or image references. \n Return only the final meta description, no extra commentary."
+        },
+        "references": {
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Return a list of useful references, as Markdown, grouped : Articles, Books, Papers, Youtube, Software, Opensource Designs, ... Dont comment!",
+            "filters": "code"
+        },
+        "toolsAndHardware": {
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Extract the required tools: software, hardware from the following tutorial. Return as Markdown chapters (H3) with very short bullet points (not bold), max. 5 per category ."            
+        },
+        "requiredSkills": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Analyze the following tutorial and identify all the skills that a person would need in order to complete the project. Return as JSON with this structure:\n\n{\n  \"skills\": [\n    {\n      \"name\": \"Skill name\", \n      \"level\": \"Beginner, Intermediate, or Advanced\", \n      \"description\": \"Brief description of where/how this skill is needed\"\n    }\n  ],\n  \"prerequisiteKnowledge\": [\n    \"Background knowledge or familiarity with concepts\"\n  ],\n  \"safetyConsiderations\": [\n    \"Any safety considerations or precautions needed\"\n  ]\n}\n\nReturn only the JSON. No introductions or explanations.",
+            "filters": "code"
+        },
+        "learnedSkills": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Analyze the following tutorial and identify all the skills that a person would learn or improve by completing this project, modest, humble, simple - dont enflate (sustainable, recylcing, ...), Return as Markdown chapter (H2) with very short bullet points (not bold), max. 5.",
+            "filters": "code"
+        },
+        "local": {
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Markdown chapter (h4) with a list of local resources, services & suppliers, max. 5, with links,group by category. dont comment, just the list",
+            "filters": "code"
+        }
+    },
+    "instructions": {
+        "context": [
+            { "flag": "makerTutorials", "text": "Focus on maker and DIY tutorial content" },
+            { "flag": "units", "text": "Include relevant units and measurements" },
+            { "flag": "safety", "text": "Include safety considerations and warnings" },
+            { "flag": "troubleshooting", "text": "Include common issues and solutions" }
+        ],
+        "format": []
+    },
+    "defaults": {
+        "context": ["makerTutorials", "units", "safety", "troubleshooting"],
+        "format": []
+    }
+} 

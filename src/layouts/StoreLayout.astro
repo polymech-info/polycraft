@@ -1,0 +1,436 @@
+---
+import "flowbite";
+
+import { createMarkdownComponent } from "@/base/index.js";
+import { translate } from "@polymech/astro-base/base/i18n.js";
+import Translate from "@polymech/astro-base/components/i18n.astro";
+import LGallery from "@polymech/astro-base/components/GalleryK.astro";
+
+import BaseLayout from "./BaseLayout.astro";
+import Wrapper from "@polymech/astro-base/components/containers/Wrapper.astro";
+
+import Readme from "@polymech/astro-base/components/polymech/readme.astro";
+import Breadcrumb from "@polymech/astro-base/components/Breadcrumb.astro";
+
+import Resources from "@polymech/astro-base/components/polymech/resources.astro";
+import Specs from "@polymech/astro-base/components/specs.astro";
+
+import TabButton from "@polymech/astro-base/components/tab-button.astro";
+import TabContent from "@polymech/astro-base/components/tab-content.astro";
+
+import { AppConfig } from "@/app/config.schema.js";
+import { loadConfig } from "@polymech/astro-base/app/config-loader.js";
+const config = loadConfig();
+
+import {
+  SHOW_3D_PREVIEW,
+  SHOW_FILES,
+  SHOW_GALLERY,
+  SHOW_RENDERINGS,
+  SHOW_LICENSE,
+  SHOW_DESCRIPTION,
+  SHOW_TABS,
+  SHOW_SPECS,
+  SHOW_DEBUG,
+  SHOW_SAMPLES,
+  SHOW_RESOURCES,
+  SHOW_CHECKOUT,
+  SHOW_README,
+  isRTL,
+  SHOW_SHOWCASE,
+  SHOW_SCREENSHOTS,
+} from "@/app/config.js";
+
+import { substitute } from "@polymech/commons/variables";
+import * as path from "path";
+import { sync as read } from "@polymech/fs/read";
+import { sync as exists } from "@polymech/fs/exists";
+import { PRODUCT_DIR } from "@/app/config.js";
+
+const { frontmatter: data, ...rest } = Astro.props;
+const itemDir = PRODUCT_DIR(data.rel);
+const contentPath = path.join(itemDir, "templates/shared", "body.md");
+if (exists(contentPath)) {
+  data.content = read(contentPath) as string;
+}
+const content = substitute(false, data.content || "", {
+  ...data,
+  LANG: Astro.currentLocale,
+});
+
+const translated_content = await translate(
+  content,
+  config.i18n.source_language,
+  Astro.currentLocale,
+);
+
+const Body = await createMarkdownComponent(translated_content);
+
+const str_debug =
+  "```json\n" +
+  JSON.stringify(
+    {
+      ...data,
+      config: null,
+    },
+    null,
+    2,
+  ) +
+  "\n```";
+
+const Content_Debug = await createMarkdownComponent(str_debug);
+---
+
+<BaseLayout
+  frontmatter={data}
+  description={data.description}
+  hideNavigation={true}
+  {...rest}
+>
+  <Wrapper>
+    <!-- Header with Breadcrumb on its own line -->
+    <div
+      class="flex flex-col gap-4 mb-4 py-4 border-b border-gray-200 dark:border-gray-700"
+    >
+      <!-- Breadcrumb -->
+      <div class="flex-1 min-w-0">
+        <Breadcrumb
+          currentPath={Astro.url.pathname}
+          collection="store"
+          title={data.title}
+          showHome={true}
+        />
+      </div>
+    </div>
+
+    <section>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        <!-- Left Column: Description -->
+        <div class="flex flex-col gap-4">
+          <div>
+            <h1 class="font-semibold mb-2 text-2xl">
+              <Translate>{`${data.title}`}</Translate>
+            </h1>
+            {
+              isRTL(Astro.currentLocale) && (
+                <div class=" font-semibold mb-2">"{data.title}"</div>
+              )
+            }
+          </div>
+
+          <article
+            class="markdown-content bg-white dark:bg-gray-800 rounded-xl p-4"
+          >
+            <Body />
+          </article>
+
+          <div class="flex flex-col gap-2">
+            {
+              SHOW_3D_PREVIEW &&
+                data.Preview3d &&
+                data.cad &&
+                data.cad[0] &&
+                data.cad[0][".html"] && (
+                  <a
+                    href={data.cad[0][".html"]}
+                    title="link to your page"
+                    aria-label="your label"
+                    class="relative group overflow-hidden pl-4 h-14 flex space-x-6 items-center bg-white dark:bg-gray-800 hover:bg-neutral-200 dark:hover:bg-gray-700 duration-300 rounded-xl w-full justify-between rounded-xl"
+                  >
+                    <span class="relative uppercase text-xs">
+                      <Translate>3D Preview</Translate>
+                    </span>
+                    <div
+                      aria-hidden="true"
+                      class="w-12 text-orange-600 transition duration-300 -translate-y-7 group-hover:translate-y-7"
+                    >
+                      <div class="h-14 flex">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-6 m-auto fill-white"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                          />
+                        </svg>
+                      </div>
+                      <div class="h-14 flex">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-6 m-auto fill-white"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                )
+            }
+
+            {
+              SHOW_CHECKOUT && data.checkout && (
+                <a
+                  href={data.checkout}
+                  title="link to your page"
+                  aria-label="your label"
+                  class="relative group overflow-hidden pl-4 h-14 flex space-x-6 items-center bg-white dark:bg-gray-800 hover:bg-black dark:hover:bg-gray-700 duration-300 rounded-xl w-full justify-between"
+                >
+                  <span class="relative uppercase text-xs ">
+                    <Translate>Add to cart</Translate>
+                  </span>
+                  <div
+                    aria-hidden="true"
+                    class="w-12  transition duration-300 -translate-y-7 group-hover:translate-y-7"
+                  >
+                    <div class="h-14 flex">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-6 m-auto fill-white"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                        />
+                      </svg>
+                    </div>
+                    <div class="h-14 flex">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-6 m-auto fill-white"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              )
+            }
+          </div>
+          {
+            SHOW_LICENSE && (
+              <div class="bg-white dark:bg-gray-800 rounded-xl p-4">
+                <h3 class="text-lg text-neutral-600 dark:text-gray-300 uppercase tracking-tight">
+                  License
+                </h3>
+                <p class=" mt-4 text-sm text-gray-700 dark:text-gray-300">
+                  {data.license}
+                </p>
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Right Column: Gallery and Actions -->
+        <div class="flex flex-col gap-4">
+          {
+            SHOW_RENDERINGS && data.assets?.renderings && (
+              <div class="bg-white dark:bg-gray-800 rounded-xl p-4">
+                <LGallery
+                  images={data.assets.gallery}
+                  gallerySettings={{ SHOW_TITLE: false }}
+                />
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="tabs-view">
+      <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+        <ul
+          class="flex flex-wrap -mb-px text-sm font-medium text-center"
+          id="default-styled-tab"
+          data-tabs-toggle="#default-styled-tab-content"
+          data-tabs-active-classes="text-orange-600 hover:text-orange-600 dark:text-purple-500 dark:hover:text-purple-500 border-orange-600 dark:border-purple-500"
+          data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300"
+          role="tablist"
+        >
+          {SHOW_README && <TabButton title="Overview" />}
+          <TabButton title="Specs" />
+
+          <TabButton title="Resources" />
+          {SHOW_SAMPLES && <TabButton title="Samples" />}
+          {data.assets.showcase.length > 0 && <TabButton title="Showcase" />}
+          {
+            SHOW_SCREENSHOTS &&
+              data.assets.screenshots &&
+              data.assets.screenshots.length > 0 && (
+                <TabButton title="Screenshots" />
+              )
+          }
+          {SHOW_DEBUG && <TabButton title="Debug" />}
+        </ul>
+      </div>
+      <div id="default-styled-tab-content">
+        <TabContent title="Overview">
+          {
+            SHOW_README && data.readme && (
+              <Readme markdown={data.readme} data={data} />
+            )
+          }
+        </TabContent>
+        <div
+          class="hidden bg-white rounded-xl dark:bg-gray-800"
+          id="specs-view"
+          role="tabpanel"
+          aria-labelledby="dashboard-tab"
+        >
+          <Specs frontmatter={data} />
+        </div>
+
+        {
+          SHOW_SAMPLES && (
+            <div
+              class="hidden p-4  bg-white rounded-xl dark:bg-gray-800"
+              id="samples-view"
+              role="tabpanel"
+              aria-labelledby="dashboard-tab"
+            >
+              <LGallery images={data.assets.samples} />
+            </div>
+          )
+        }
+        {
+          SHOW_RESOURCES && (
+            <div
+              class="hidden p-4  bg-white rounded-xl dark:bg-gray-800"
+              id="resources-view"
+              role="tabpanel"
+              aria-labelledby="dashboard-tab"
+            >
+              <Resources frontmatter={data} />
+            </div>
+          )
+        }
+        {
+          SHOW_SHOWCASE &&
+            data.assets.showcase &&
+            data.assets.showcase.length > 0 && (
+              <div
+                class="hidden p-4 bg-white rounded-xl dark:bg-gray-800"
+                id="showcase-view"
+                role="tabpanel"
+                aria-labelledby="dashboard-tab"
+              >
+                <LGallery
+                  images={data.assets.showcase}
+                  lightboxSettings={{
+                    SHOW_TITLE: false,
+                    SHOW_DESCRIPTION: false,
+                    SIZES_THUMB: "w-32 h-32",
+                  }}
+                  gallerySettings={{
+                    SHOW_TITLE: false,
+                    SHOW_DESCRIPTION: false,
+                    //SIZES_THUMB: "w-32 h-32",
+                  }}
+                />
+              </div>
+            )
+        }
+        {
+          SHOW_SCREENSHOTS &&
+            data.assets.screenshots &&
+            data.assets.screenshots.length > 0 && (
+              <div
+                class="hidden p-4 bg-white rounded-xl dark:bg-gray-800"
+                id="screenshots-view"
+                role="tabpanel"
+                aria-labelledby="dashboard-tab"
+              >
+                <LGallery
+                  images={data.assets.screenshots}
+                  lightboxSettings={{
+                    SHOW_TITLE: true,
+                    SHOW_DESCRIPTION: true,
+                    SIZES_THUMB: "w-32 h-32",
+                  }}
+                  gallerySettings={{
+                    SHOW_TITLE: true,
+                    SHOW_DESCRIPTION: true,
+                    SIZES_THUMB: "w-32 h-32",
+                  }}
+                />
+              </div>
+            )
+        }
+        {
+          SHOW_DEBUG && (
+            <div
+              class="hidden rounded-lg bg-white p-4 dark:bg-gray-800"
+              id="debug-view"
+              role="tabpanel"
+              aria-labelledby="dashboard-tab"
+            >
+              <Content_Debug />
+            </div>
+          )
+        }
+      </div>
+      <script>
+        window.addEventListener("hashchange", () => {
+          const hash = window.location.hash.substring(1);
+          if (hash) {
+            const tabTrigger = document.querySelector(
+              `a[href="#${hash}"], a[data-tabs-target="#${hash}"]`,
+            );
+            if (tabTrigger) {
+              setTimeout(() => {
+                (tabTrigger as HTMLElement).click();
+              }, 100);
+            }
+          }
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+          const hash = window.location.hash;
+          if (hash) {
+            const tabTrigger = document.querySelector(
+              `a[href="${hash}"], a[data-tabs-target="${hash}"]`,
+            );
+            if (tabTrigger) {
+              setTimeout(() => {
+                (tabTrigger as HTMLElement).click();
+              }, 100);
+            }
+          }
+          document.querySelectorAll("a[data-tabs-target]").forEach((tab) => {
+            tab.addEventListener("click", () => {
+              const href = tab.getAttribute("href");
+              if (href) {
+                window.location.hash = href;
+              }
+            });
+          });
+        });
+      </script>
+    </section>
+  </Wrapper>
+</BaseLayout>

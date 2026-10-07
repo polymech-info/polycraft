@@ -1,0 +1,154 @@
+---
+import "../styles/flowbite.css"
+import "../styles/global.css"
+import "../styles/custom.scss"
+
+import { LANGUAGES_PROD } from "config/config.js"
+
+import config from "@/config/config.json"
+import { plainify } from "@/base/strings.js"
+
+
+import { AstroSeo } from "@astrolib/seo"
+import { item_keywords } from '@/base/seo.js'
+import  StructuredData from './head/ArticleStructuredData.astro'
+import Hreflang from '@/components/polymech/hreflang.astro'
+import { IComponentConfig  } from "@polymech/commons"
+
+export interface Props {
+  title?: string;
+  meta_title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  canonical?: string;
+  view: string;
+  path: string;
+  frontmatter?: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+    images?: { url: string; alt?: string }[];
+  };
+}
+const env = import.meta.env
+const { frontmatter, view, path } = Astro.props as Props;
+const item: IComponentConfig = frontmatter as IComponentConfig || {}
+const { url } = Astro.request
+const REDIRECT  = false
+const _url = Astro.url
+const canonicalUrl = _url.origin
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+
+const hreflangs = LANGUAGES_PROD.filter((lang)=>lang!==Astro.currentLocale).map((lang) => ({
+  lang,
+  url: `${canonicalUrl}/${lang}/${view}/${path}`,
+}))
+
+const image = item?.image || config.site.image
+const image_url = image.src
+const image_alt = image.alt
+
+const title = item?.title as string || config.site.title || ""
+const description = item?.description as string || config.metadata.description
+
+const keywords = await item_keywords(item,  Astro.currentLocale)
+
+const tracking = config?.tracking?.googleAnalytics || 'G-RW6Q6EG3J0'
+---
+
+<AstroSeo
+  title={title}
+  description={description}  
+  openGraph={{
+    url,
+    title: title,
+    description: plainify(description),
+    images: [
+      {
+        url: image_url || '',
+        width: 1200,
+        height: 630,
+        alt: image_alt,
+        type: "image/jpeg",
+      },
+    ],
+    site_name: title,
+    type: "website",
+    locale: "en_US",
+  }}
+  twitter={{
+    handle: "@yourhandle",
+    site: "@yoursite",
+    cardType: "summary_large_image",
+  }}
+/>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<!-- Canonical URL -->
+<Hreflang canonical={canonicalURL} hreflangs={hreflangs} />
+
+<!-- meta-description -->
+<meta name="description" content={plainify(description)}/>
+
+<!-- meta-keywords -->
+<meta name="keywords" content={plainify( keywords )}/>
+<meta name="author" content={plainify( config?.metadata?.author )} />
+
+<!-- Favicons -->
+<link rel="icon" href="/favicons/favicon.ico" sizes="any" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
+<link rel="manifest" href="/favicons/site.webmanifest" />
+
+<!-- Favicon for IE -->
+<link rel="shortcut icon" href="/favicons/favicon.ico" type="image/x-icon" />
+
+<!-- Favicons for different sizes -->
+<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+
+<!-- Additional SEO -->
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+
+<!-- Apple Touch Icon (already included in favicons, but keeping for backwards compatibility) -->
+<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+
+<!-- Theme Color for Mobile Browsers -->
+<meta name="theme-color" content="#ffffff" />
+
+<!-- For IE -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!--- Inter fonr from rsms.me/inter 
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+-->
+<!--- IBM Plex Mono font from fonts.google.com -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" as="style" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" />
+
+<script src="/js/flowbite.min.js" defer></script>
+
+<script src="/js/cdn.min.js" defer></script>
+
+<StructuredData frontmatter={item} />
+
+{tracking  && (  
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F6LRS55GG3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-F6LRS55GG3');
+</script>
+)}
+
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+

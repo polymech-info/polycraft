@@ -1,0 +1,492 @@
+---
+pubDate: 2024-12-19
+title: MasonryGallery Component
+author: Development Team
+description: "Complete guide to the MasonryGallery component - a Pinterest-style masonry layout with lightbox functionality, glob support, and responsive design."
+image:
+  url: "https://fastly.picsum.photos/id/972/200/300.jpg?hmac=UMf5f6BV9GkLiz0Xz9kMwm1riiTtlpIG2jt0WrxZ51Q?nature"
+  alt: "Masonry gallery preview"
+tags: ["masonry", "gallery", "images", "component", "responsive"]
+sidebar:
+  label: "Navigation"
+  items:
+    - label: "Overview"
+      href: "#masonrygallery-component"
+    - label: "Live Examples"
+      href: "#live-examples"
+    - label: "Basic Usage"
+      href: "#basic-usage"
+    - label: "Advanced Features"
+      href: "#advanced-configuration"
+    - label: "API Reference"
+      href: "#api-reference"
+    - label: "Best Practices"
+      href: "#best-practices"
+---
+
+import MasonryGallery from "@polymech/astro-base/components/MasonryGallery.astro";
+
+
+# MasonryGallery Component
+
+A beautiful Pinterest-style masonry gallery component with lightbox functionality, glob pattern support, and configurable constraints. Perfect for showcasing image collections with natural, flowing layouts.
+
+## Key Features
+
+- **📐 Masonry Layout**: CSS Grid-based masonry with no fixed height - images flow naturally
+- **🖼️ Lightbox**: Full lightbox with swipe support and keyboard navigation
+- **🔍 Glob Support**: Auto-load images using patterns like `*.jpg`, `**/*.{jpg,png}`
+- **📏 Size Constraints**: Configure `maxItems`, `maxWidth`, and `maxHeight`
+- **📱 Responsive**: Adapts seamlessly to mobile, tablet, and desktop screens
+- **🏷️ Metadata Support**: Companion `.json` and `.md` files for rich image metadata
+- **⚡ Performance**: Lazy loading and optimized image formats (AVIF, WebP)
+- **🎨 Customizable**: Full control over gallery and lightbox settings
+- **📅 Flexible Grouping**: Optional grouping by year, month, or custom functions with EXIF date extraction
+
+## Live Examples
+
+### Default Masonry Layout
+
+Auto-loads images from the gallery directory with balanced sizing:
+
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  maxWidth="150px"
+  maxHeight="500px"
+  groupBy="groupByYear"
+  gallerySettings={{
+    SHOW_TITLE: false,
+    SHOW_DESCRIPTION: false,
+    SIZES_REGULAR: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+  }}
+  lightboxSettings={{
+    SHOW_TITLE: true,
+    SHOW_DESCRIPTION: true,
+    SIZES_LARGE: "90vw"
+  }}
+/>
+
+
+### Compact Grid
+
+Perfect for thumbnails and preview galleries:
+
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  maxWidth="250px"
+  maxHeight="300px"
+  gallerySettings={{
+    SHOW_TITLE: false,
+    SHOW_DESCRIPTION: false
+  }}
+/>
+
+### Large Format Display
+
+Ideal for portfolio and showcase galleries:
+
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  maxWidth="450px"
+  maxHeight="600px"
+  gallerySettings={{
+    SHOW_TITLE: true,
+    SHOW_DESCRIPTION: true
+  }}
+/>
+
+### Mobile-Optimized
+
+Responsive design that works beautifully on all devices:
+
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  maxWidth="280px"
+  maxHeight="350px"
+  gallerySettings={{
+    SHOW_TITLE: false,
+    SHOW_DESCRIPTION: false,
+    SIZES_REGULAR: "(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+  }}
+/>
+
+## Basic Usage
+
+### Simple Glob Pattern
+
+```jsx
+// Auto-load all JPG images with default settings
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+/>
+```
+
+### With Size Constraints
+
+```jsx
+// Control maximum dimensions and item count
+<MasonryGallery 
+  glob="./images/*.{jpg,png,webp}"
+  maxItems={10}
+  maxWidth="300px"
+  maxHeight="400px"
+/>
+```
+
+### No Grouping (Default)
+
+```jsx
+// Simple masonry layout without any grouping
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  maxWidth="280px"
+  maxHeight="350px"
+/>
+```
+
+### Group by Year
+
+```jsx
+// Group images by year with year headers
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  groupBy="groupByYear"
+  maxWidth="280px"
+  maxHeight="350px"
+/>
+```
+
+### Group by Month
+
+```jsx
+// Group images by month with month/year headers
+<MasonryGallery 
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  groupBy="groupByMonth"
+  maxWidth="280px"
+  maxHeight="350px"
+/>
+```
+
+### Subdirectory Patterns
+
+```jsx
+// Load from nested directories
+<MasonryGallery 
+  glob="./portfolio/**/*.jpg"
+  maxItems={10}
+  maxWidth="350px"
+  maxHeight="500px"
+/>
+```
+
+## Advanced Configuration
+
+### Custom Gallery Settings
+
+```jsx
+<MasonryGallery 
+  glob="./showcase/*.jpg"
+  maxItems={10}
+  maxWidth="400px"
+  maxHeight="600px"
+  gallerySettings={{
+    SHOW_TITLE: true,
+    SHOW_DESCRIPTION: true,
+    SIZES_REGULAR: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+    SIZES_THUMB: "200px",
+    SIZES_LARGE: "800px"
+  }}
+/>
+```
+
+### Lightbox Customization
+
+```jsx
+<MasonryGallery 
+  glob="./photos/*.jpg"
+  maxItems={10}
+  lightboxSettings={{
+    SHOW_TITLE: true,
+    SHOW_DESCRIPTION: false,
+    SIZES_LARGE: "95vw"
+  }}
+/>
+```
+
+### Custom Grouping Function
+
+```jsx
+// Create a custom grouping function
+const groupByFileSize = (image) => {
+  // This would need to be implemented to get actual file size
+  // For demonstration purposes, we'll group by a mock size category
+  const mockSize = Math.random() > 0.5 ? 'large' : 'small';
+  return {
+    key: mockSize,
+    label: mockSize === 'large' ? 'Large Images' : 'Small Images',
+    sortOrder: mockSize === 'large' ? 1 : 0
+  };
+};
+
+<MasonryGallery 
+  glob="./portfolio/*.jpg"
+  maxItems={10}
+  groupBy={groupByFileSize}
+  maxWidth="320px"
+  maxHeight="400px"
+  gallerySettings={{
+    SHOW_TITLE: true,
+    SHOW_DESCRIPTION: false
+  }}
+/>
+```
+
+### No Grouping for Clean Layout
+
+```jsx
+// For a clean, simple layout without any organization headers
+<MasonryGallery 
+  glob="./portfolio/*.jpg"
+  maxItems={10}
+  maxWidth="320px"
+  maxHeight="400px"
+  gallerySettings={{
+    SHOW_TITLE: true,
+    SHOW_DESCRIPTION: false
+  }}
+/>
+```
+
+### Manual Images with Glob
+
+```jsx
+// Combine manual images with auto-loaded ones
+const featuredImages = [
+  { 
+    src: "./featured/hero.jpg", 
+    alt: "Hero image", 
+    title: "Featured Photo",
+    description: "Our most popular image"
+  }
+];
+
+<MasonryGallery 
+  images={featuredImages}
+  glob="./gallery/*.jpg"
+  maxItems={10}
+  maxWidth="350px"
+  maxHeight="500px"
+/>
+```
+
+## Grouping Options
+
+The `groupBy` prop provides flexible ways to organize your images:
+
+### Predefined Grouping Functions
+
+- **`null` (default)**: No grouping - displays images in a simple masonry layout
+- **`"groupByYear"`**: Groups images by year based on EXIF date or file modification time
+- **`"groupByMonth"`**: Groups images by month and year (e.g., "January 2024", "February 2024")
+
+### Custom Grouping Functions
+
+You can also provide a custom function that takes an image and returns a `GroupInfo` object:
+
+```jsx
+const customGroupFunction = (image) => ({
+  key: 'unique-group-key',      // Used for internal grouping
+  label: 'Display Label',       // Shown as the group header
+  sortOrder: 123               // Numeric value for sorting (higher = shown first)
+});
+```
+
+## API Reference
+
+### Props
+
+```typescript
+type GroupByFunction = (image: Image) => GroupInfo;
+
+interface Props {
+  images?: Image[];           // Manual image array
+  glob?: string;             // Glob pattern for auto-loading
+  maxItems?: number;         // Maximum number of images (default: 50)
+  maxWidth?: string;         // Max width per image (default: "300px")
+  maxHeight?: string;        // Max height per image (default: "400px")
+  entryPath?: string;        // Content entry path for resolving relative images
+  groupBy?: GroupByFunction | 'groupByYear' | 'groupByMonth' | null; // Grouping strategy (default: null = no grouping)
+  gallerySettings?: {
+    SIZES_REGULAR?: string;  // Responsive sizes for main images
+    SIZES_THUMB?: string;    // Responsive sizes for thumbnails
+    SIZES_LARGE?: string;    // Responsive sizes for lightbox
+    SHOW_TITLE?: boolean;    // Show image titles
+    SHOW_DESCRIPTION?: boolean; // Show image descriptions
+  };
+  lightboxSettings?: {
+    SIZES_REGULAR?: string;
+    SIZES_THUMB?: string;
+    SIZES_LARGE?: string;
+    SHOW_TITLE?: boolean;
+    SHOW_DESCRIPTION?: boolean;
+  };
+}
+
+interface GroupInfo {
+  key: string;              // Unique identifier for the group
+  label: string;            // Display label for the group
+  sortOrder: number;        // Numeric value for sorting groups
+}
+```
+
+### Image Interface
+
+```typescript
+interface Image {
+  src: string;               // Image source URL
+  alt: string;               // Alt text for accessibility
+  title?: string;            // Optional title
+  description?: string;      // Optional description
+}
+```
+
+## Metadata Support
+
+Enhance your images with companion metadata files:
+
+### JSON Metadata (`image.json`)
+
+```json
+{
+  "alt": "Beautiful mountain landscape at sunset",
+  "title": "Mountain Sunset",
+  "description": "A breathtaking view of mountains during golden hour"
+}
+```
+
+### Markdown Metadata (`image.md`)
+
+```markdown
+A detailed description of the image that can include **markdown formatting**.
+
+This will be used as the description if no JSON description is provided.
+```
+
+## Responsive Behavior
+
+The MasonryGallery automatically adapts to different screen sizes:
+
+- **Desktop (1024px+)**: Minimum 250px columns with auto-fill
+- **Tablet (768px-1023px)**: Minimum 200px columns  
+- **Mobile (480px-767px)**: Minimum 150px columns
+- **Small Mobile (&lt;480px)**: Single column layout
+
+## Interactive Controls
+
+### Keyboard Navigation (Lightbox)
+
+- **Escape**: Close lightbox
+- **Arrow Left**: Previous image
+- **Arrow Right**: Next image
+
+### Touch Controls (Lightbox)
+
+- **Swipe Left**: Next image
+- **Swipe Right**: Previous image
+- **Tap**: Close lightbox (outside image)
+
+## Best Practices
+
+### Performance Optimization
+
+```jsx
+// Use appropriate sizing for your use case
+<MasonryGallery 
+  glob="./thumbnails/*.jpg"
+  maxItems={10}              // Limit items for performance
+  maxWidth="250px"           // Smaller for faster loading
+  maxHeight="300px"
+  gallerySettings={{
+    SIZES_REGULAR: "(max-width: 640px) 250px, (max-width: 1024px) 300px, 350px"
+  }}
+/>
+```
+
+### Accessibility
+
+```jsx
+// Always provide meaningful alt text
+const images = [
+  { 
+    src: "./photo.jpg", 
+    alt: "Person hiking on mountain trail during sunrise",
+    title: "Morning Hike"
+  }
+];
+```
+
+### Content Organization
+
+```jsx
+// Organize images in logical directories
+<MasonryGallery glob="./projects/web-design/*.jpg" />      // Web projects
+<MasonryGallery glob="./projects/photography/*.jpg" />    // Photography
+<MasonryGallery glob="./projects/illustrations/*.jpg" />  // Illustrations
+```
+
+### Loading Strategy
+
+```jsx
+// For above-the-fold galleries, consider smaller maxItems
+<MasonryGallery 
+  glob="./hero-gallery/*.jpg"
+  maxItems={10}              // Load fewer images initially
+  maxWidth="400px"
+  maxHeight="500px"
+/>
+```
+
+## CSS Classes
+
+The component uses these CSS classes for styling customization:
+
+- `.masonry-gallery`: Main container
+- `.masonry-container`: Grid container
+- `.masonry-item`: Individual image container
+- `.line-clamp-2`: Text truncation utility
+
+## Browser Support
+
+- **Modern browsers**: Full CSS Grid masonry support
+- **Fallback**: Graceful degradation for older browsers
+- **Progressive enhancement**: Touch and swipe support where available
+- **Accessibility**: Full ARIA support and keyboard navigation
+
+## Troubleshooting
+
+### Images Not Loading
+
+1. Check that your glob pattern matches actual files
+2. Ensure images are in the correct directory relative to the MDX file
+3. Verify file extensions match your glob pattern
+
+### Performance Issues
+
+1. Reduce `maxItems` for better initial load times
+2. Use appropriate `maxWidth` and `maxHeight` values
+3. Consider using smaller image formats (WebP, AVIF)
+
+### Layout Issues
+
+1. Ensure your images have reasonable aspect ratios
+2. Check that `maxWidth` and `maxHeight` values work well together
+3. Test on different screen sizes for responsive behavior

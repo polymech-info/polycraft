@@ -1,0 +1,32 @@
+---
+import Wrapper from "@/components/containers/Wrapper.astro";
+import { I18N_SOURCE_LANGUAGE } from "@/config/config";
+import { items } from "@/config/navigation.js";
+const locale = Astro.currentLocale || I18N_SOURCE_LANGUAGE;
+const navItems = await items({ locale });
+---
+<Wrapper>
+<section>
+  <div
+    class="relative flex w-full bg-gray-100 items-center flex-row pb-4 mx-auto text-xs text-neutral-600 font-mono tracking-tight uppercase"
+  >
+    <a
+      href="/"
+      title="link to your page"
+      aria-label="your label"
+      class="hover:text-orange-600"></a>
+    <nav class="items-center flex-grow flex justify-end flex-row ml-auto gap-4">
+      {
+        navItems.map((item: any) => (
+          <a
+            href={item.href}
+            title={item.title}
+            aria-label={item.ariaLabel}
+            class={item.class}
+          >{item.title}</a>
+        ))
+      }
+    </nav>
+  </div>
+</section>
+</Wrapper>

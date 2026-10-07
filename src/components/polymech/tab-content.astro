@@ -1,0 +1,18 @@
+---
+import { slugify } from "@/base/strings.js";
+export interface Props {
+  title: string;
+  class?: string;
+}
+const { title = "title", class:className = "" } = Astro.props;
+const slug = `${slugify(title)}-tab-content`;
+const label = `${slug}-tab`;
+const view = `${slugify(title)}-view`;
+---
+
+<div
+  class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 content"
+  id={view}
+  role="tabpanel"
+  aria-labelledby={label}
+> <slot /></div>

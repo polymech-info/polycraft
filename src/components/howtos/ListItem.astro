@@ -1,0 +1,58 @@
+---
+import { IMAGE_SETTINGS } from "../../app/config.js";
+import Translate from "@polymech/astro-base/components/i18n.astro";
+import { Img } from "imagetools/components";
+import { asset_local_rel, IHowto } from "@/model/howto/howto.js";
+const { title, url, model, selected = false } = Astro.props;
+const item: IHowto = model.item;
+const classes = `group relative bg-white overflow-hidden group rounded-xl ${selected ? "ring-2 ring-orange-500" : ""}`;
+const coverLocaleRel = await asset_local_rel(item, item.cover_image);
+
+const { images, gallerySettings = {}, lightboxSettings = {} } = Astro.props;
+
+const mergedGallerySettings = {
+  SIZES_REGULAR:
+    gallerySettings.SIZES_REGULAR || IMAGE_SETTINGS.gallery.sizes_regular,
+  SIZES_THUMB:
+    gallerySettings.SIZES_THUMB || IMAGE_SETTINGS.gallery.sizes_thumb,
+  SHOW_TITLE: gallerySettings.SHOW_TITLE ?? IMAGE_SETTINGS.gallery.show_title,
+  SHOW_DESCRIPTION:
+    gallerySettings.SHOW_DESCRIPTION ?? IMAGE_SETTINGS.gallery.show_description,
+};
+---
+
+<div class={classes}>
+  <div
+    class="p-4 overflow-hidden group-hover:opacity-75 duration-300 transition-all"
+  >
+    <a href={url} title={title} aria-label={title}>
+      <Img
+        src={coverLocaleRel}
+        alt={title}
+        format="avif"
+        objectFit="cover"
+        loading="lazy"
+        placeholder="blurred"
+        sizes={mergedGallerySettings.SIZES_REGULAR}
+        breakpoints={{ count: 2, minWidth: 180, maxWidth: 450 }}
+        attributes={{
+          img: {
+            class: "w-32 h-32 rounded hover:ring-2 aspect-square thumbnail-img",
+          },
+        }}
+      />
+    </a>
+  </div>
+  <div class="p-4 text-xs text-neutral-500">
+    <div class="flex items-center justify-between space-x-8">
+      <h3>
+        <a href={url} title={title} aria-label={title}>
+          <span aria-hidden="true" class="absolute inset-0"></span>
+          <Translate>{title}</Translate>
+        </a>
+      </h3>
+      <p class="top-4 right-4"></p>
+      <p class="mt-1"></p>
+    </div>
+  </div>
+</div>

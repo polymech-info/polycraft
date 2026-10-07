@@ -1,0 +1,407 @@
+---
+const products = [
+  {
+    id: 1,
+    name: "OP-1 Portable Synthesizer",
+    price: "$1,299.00",
+    description: "All-in-one portable synthesizer, sampler, and controller.",
+    storage: "64MB",
+    imageSrc: "/products/1.jpeg",
+  },
+  {
+    id: 2,
+    name: "PO-33 Pocket Operator",
+    price: "$89.00",
+    description:
+      "Micro sampler and sequencer with built-in microphone and 40-second sample memory.",
+    storage: "4MB",
+    imageSrc: "/products/17.jpeg",
+  },
+];
+---
+
+<section>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 just xl:grid-cols-3 gap-2">
+    <div class="flex flex-col gap-2 h-full justify-between">
+      <div>
+        <h1
+          class="text-lg text-neutral-600 font-mono tracking-tight text-balance">
+          IPHONE 14 PRO MAX
+        </h1>
+        <p class="text-neutral-500 font-mono mt-2 text-sm">
+          Elevate your iPhone 14 Pro Max's aesthetic with our exclusive
+          collection. Gone are the days of conventional designs. Our innovative
+          process transforms standard patterns into exceptional skins for your
+          device.
+        </p>
+        <form class="bg-white p-4 mt-6 rounded-xl">
+          <div class="grid grid-cols-12 gap-1">
+            <div class="col-span-full">
+              <label
+                for="email-address"
+                class="sr-only"
+                >Email address</label
+              >
+              <div class="mt-1">
+                <input
+                  type="email"
+                  id="email-address"
+                  name="email-address"
+                  placeholder="Email address"
+                  aria-label="Email address"
+                  autocomplete="email"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-full">
+              <label
+                for="name-on-card"
+                class="sr-only"
+                >Name on card</label
+              >
+              <div class="mt-1">
+                <input
+                  type="text"
+                  id="name-on-card"
+                  name="name-on-card"
+                  placeholder="Name on card"
+                  autocomplete="cc-name"
+                  aria-label="Name on card"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-full">
+              <label
+                for="card-number"
+                class="sr-only"
+                >Card number</label
+              >
+              <div class="mt-1">
+                <input
+                  type="text"
+                  id="card-number"
+                  name="card-number"
+                  autocomplete="cc-number"
+                  placeholder="Card number"
+                  aria-label="Card number"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-8 sm:col-span-9">
+              <label
+                for="expiration-date"
+                class="sr-only"
+                >Expiration date (MM/YY)</label
+              >
+              <div class="mt-1">
+                <input
+                  type="text"
+                  name="expiration-date"
+                  id="expiration-date"
+                  placeholder="Expiration date (MM/YY)"
+                  aria-label="Expiration date"
+                  autocomplete="cc-exp"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-4 sm:col-span-3">
+              <label
+                for="cvc"
+                class="sr-only"
+                >CVC</label
+              >
+              <div class="mt-1">
+                <input
+                  id="cvc"
+                  type="text"
+                  name="cvc"
+                  placeholder="CVC"
+                  autocomplete="cc-csc"
+                  aria-label="CVC"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-full">
+              <label
+                for="address"
+                class="sr-only"
+                >Address</label
+              >
+              <div class="mt-1">
+                <input
+                  id="address"
+                  type="text"
+                  name="address"
+                  placeholder="Address"
+                  aria-label="Address"
+                  autocomplete="street-address"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-full sm:col-span-4">
+              <label
+                for="city"
+                class="sr-only"
+                >City</label
+              >
+              <div class="mt-1">
+                <input
+                  id="city"
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  aria-label="City"
+                  autocomplete="address-level2"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-full sm:col-span-4">
+              <label
+                for="region"
+                class="sr-only"
+                >State / Province</label
+              >
+              <div class="mt-1">
+                <input
+                  id="region"
+                  type="text"
+                  name="region"
+                  placeholder="State / Province"
+                  aria-label="State / Province"
+                  autocomplete="address-level1"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+            <div class="col-span-full sm:col-span-4">
+              <label
+                for="postal-code"
+                class="sr-only"
+                >Postal code</label
+              >
+              <div class="mt-1">
+                <input
+                  id="postal-code"
+                  type="text"
+                  name="postal-code"
+                  placeholder="Postal Code"
+                  autocomplete="postal-code"
+                  aria-label="Postal code"
+                  class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-span-full mt-2">
+            <label
+              for="discount-code"
+              class="sr-only"
+              >Discount code</label
+            >
+            <div class="mt-1 flex w-full space-x-2">
+              <input
+                id="discount-code"
+                type="text"
+                name="discount-code"
+                placeholder="Discount Code"
+                aria-label="Discount code"
+                class="flex-auto rounded-xl font-mono border-0 h-14 text-xs uppercase duration-300 px-3.5 py-2 text-neutral-500 ring-1 ring-inset ring-white placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 bg-neutral-100 w-full"
+              />
+              <button
+                type="submit"
+                title="link to your page"
+                aria-label="your label"
+                class="relative group overflow-hidden px-6 justify-center text-xs text-white font-mono h-14 flex uppercase items-center bg-black hover:bg-neutral-200 hover:text-orange-600 duration-300 rounded-xl w-full">
+                Apply
+              </button>
+            </div>
+          </div>
+          <div class="mt-2 flex flex-col gap-2">
+            <button
+              type="submit"
+              title="link to your page"
+              aria-label="your label"
+              class="relative group overflow-hidden pl-4 justify-between text-xs text-white font-mono h-14 flex space-x-6 items-center bg-black hover:bg-neutral-200 hover:text-orange-600 duration-300 rounded-xl w-full">
+              <span class="relative uppercase text-xs">Pay with apple</span>
+              <div
+                aria-hidden="true"
+                class="w-12 transition duration-300 -translate-y-7 group-hover:translate-y-7">
+                <div class="h-14 flex">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6 m-auto fill-white">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="h-14 flex">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6 m-auto fill-white">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </button>
+            <button
+              type="submit"
+              title="link to your page"
+              aria-label="your label"
+              class="relative group overflow-hidden pl-4 font-mono h-14 flex space-x-6 items-center bg-orange-500 hover:bg-black duration-300 rounded-xl w-full justify-between">
+              <span class="relative uppercase text-xs text-white">Pay</span>
+              <div
+                aria-hidden="true"
+                class="w-12 text-white transition duration-300 -translate-y-7 group-hover:translate-y-7">
+                <div class="h-14 flex">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6 m-auto fill-white">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="h-14 flex">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6 m-auto fill-white">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="lg:col-span-2 space-y-2">
+      <div class="">
+        <ul
+          role="list"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+          {
+            products.map((product) => (
+              <li
+                x-data="{ show: true }"
+                x-show="show">
+                <div class="flex flex-col gap-2 relative p-4 bg-white rounded-xl">
+                  <img
+                    src={product.imageSrc}
+                    alt={product.name}
+                    class="aspect-[4/2] flex-none rounded-lg bg-neutral-200 object-cover object-center"
+                  />
+                  <div class="flex flex-col justify-between  w-full">
+                    <div class=" text-sm ">
+                      <h3 class="text-lg text-neutral-600 uppercase font-mono tracking-tight">
+                        {product.name}
+                      </h3>
+                      <p class="text-neutral-500 font-mono">
+                        {product.price} — {product.storage}
+                      </p>
+                      <p class="text-neutral-500 font-mono text-balance mt-8">
+                        {product.description}
+                      </p>
+                    </div>
+                    <div class="flex ml-auto mt-16">
+                      <button
+                        @click="show = false"
+                        type="submit"
+                        title="link to your page"
+                        aria-label="your label"
+                        class="relative group  px-6 justify-center text-xs text-orange-600 uppercase font-mono h-8 flex  items-center bg-neutral-100 hover:bg-neutral-200 hover:text-orange-600 duration-300 rounded-lg w-full">
+                        <span class="sr-only">Remove</span>
+                        Remove
+                      </button>
+
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="bg-white p-4 rounded-xl">
+        <div class="flex-none pt-2">
+          <dl class="space-y-6 text-sm  text-neutral-500 font-mono">
+            <div class="flex justify-between">
+              <dt
+                class="text-lg text-neutral-600 uppercase font-mono tracking-tight">
+                Subtotal
+              </dt>
+              <dd class="text-neutral-500 font-mono">$920.00</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="flex">
+                <span
+                  class="text-lg text-neutral-600 uppercase font-mono tracking-tight"
+                  >Discount</span
+                >
+                <span
+                  class="ml-2 rounded-md bg-neutral-100 px-2 py-0.5 inline-flex items-center text-xs tracking-wide text-orange-600 uppercase"
+                  >LEXINGTON30</span
+                >
+              </dt>
+              <dd class="text-neutral-500 font-mono">-$30.00</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt
+                class="text-lg text-neutral-600 uppercase font-mono tracking-tight">
+                Taxes
+              </dt>
+              <dd class="text-neutral-500 font-mono">$403.68</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt
+                class="text-lg text-neutral-600 uppercase font-mono tracking-tight">
+                Shipping
+              </dt>
+              <dd class="text-neutral-500 font-mono">Free</dd>
+            </div>
+            <div
+              class="flex items-center justify-between border-t border-neutral-200 pt-6 text-neutral-500 font-mono">
+              <dt class="text-base">Total</dt>
+              <dd class="text-base">$3.019</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

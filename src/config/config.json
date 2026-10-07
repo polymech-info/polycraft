@@ -1,0 +1,86 @@
+{
+  "site": {
+    "title": "Polymech",
+    "base_url": "https://library.polymech.info/",
+    "description": "",
+    "base_path": "/",
+    "trailing_slash": false,
+    "favicon": "/images/favicon.png",
+    "logo": "/images/logo.png",
+    "logo_darkmode": "/images/logo-darkmode.png",
+    "logo_width": "150",
+    "logo_height": "33",
+    "logo_text": "Polymech Logo",
+    "image": {
+      "default": "/images/default-image.png",
+      "error": "/images/error-image.png",
+      "alt": "Astrofront",
+      "src": "https://assets.files.polymech.info/machines//assets/newsletter/common/products/extruders/overview-3.jpg"
+    }
+  },
+  "footer_left": [
+    {
+      "href": "/infopages/privacy",
+      "text": "Privacy"
+    },
+    {
+      "href": "/infopages/contact",
+      "text": "Contact"
+    },
+    {
+      "href": "/newsletter/newsletter_2024_09_en-hugo-release.html",
+      "text": "Newsletter"
+    }
+  ],
+  "footer_right": [],
+  "settings": {
+    "search": true,
+    "account": true,
+    "sticky_header": true,
+    "theme_switcher": true,
+    "default_theme": "system"
+  },
+  "params": {
+    "contact_form_action": "#",
+    "copyright": "Designed And Developed by [Themefisher](https://themefisher.com/)"
+  },
+  "navigation_button": {
+    "enable": true,
+    "label": "Get Started",
+    "link": "https://github.com/themefisher/astrofront"
+  },
+  "ecommerce": {
+    "brand": "Polymech",
+    "currencySymbol": "",
+    "currencyCode": "EUR"
+  },
+  "metadata": {
+    "country": "Spain",
+    "city": "Barcelona",
+    "author": "Creava",
+    "author_bio": "I am in, if its true",
+    "author_url": "https://creava.org/",
+    "image": "/images/og-image.png",
+    "description": "Polymech is a plastic prototyping company that offers product design services.",
+    "keywords": "Plastic, Craft, Prototyping, Product Design, Opensource"
+  },
+  "shopify": {
+    "currencySymbol": "",
+    "currencyCode": "EUR",
+    "collections": {
+      "hero_slider": "hidden-homepage-carousel",
+      "featured_products": "featured-products"
+    }
+  },
+  "pages": {
+    "home": {
+      "hero": "https://assets.files.polymech.info/machines//assets/newsletter/common/products/extruders/overview-3.jpg",
+      "blog": {
+        "store": "resources"
+      }
+    }
+  },
+  "_tracking": {
+    "googleAnalytics": "G-RW6Q6EG3J0"
+  }
+}

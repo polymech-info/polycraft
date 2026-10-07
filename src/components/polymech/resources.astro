@@ -1,0 +1,132 @@
+---
+import { createMarkdownComponent } from "@/base/index.js";
+import Translation from "@/components/polymech/i18n.astro";
+import Link from "./link.astro";
+
+const { frontmatter: data } = Astro.props;
+const LINK_CLASSES = "text-blue-400 hover:text-blue-800 hover:underline";
+
+const getHref = (key, data) => {
+  switch (key) {
+    case "cad":
+      return data.cad?.[0]?.[".html"]
+    default:
+      return data[key]
+  }
+}
+
+const checkCondition = (key, data) => {
+  switch (key) {
+    case "cad":
+      return !!data.Preview3d && !!data.cad?.[0]?.[".html"];
+    default:
+      return true;
+  }
+};
+
+const links = (data) =>
+  ["forum", "firmware", "download", "tests", "cad"].map((key) => {
+    return {
+      key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      getHref: () => getHref(key, data),
+      condition: () => checkCondition(key, data),
+    };
+  });
+
+const componentsLinks = (data) =>
+  data.components?.map((comp) => ({
+    key: comp.name,
+    label: comp.name,
+    getHref: () => comp.store,
+    condition: () => !!comp.store,
+  })) || [];
+
+const authorsLinks = (data) =>
+  data.authors?.map((author) => ({
+    key: author.name,
+    label: author.name,
+    getHref: () => author.url,
+    condition: () => !!author.url,
+  })) || [];
+
+const groups = {
+  Resources: links(data),
+  ...(data.components && { Components: componentsLinks(data) }),
+  ...(data.authors && { Authors: authorsLinks(data) }),
+};
+
+const filteredGroups: Record<
+  string,
+  {
+    key: string;
+    label: string;
+    getHref: () => string;
+    condition: () => boolean;
+  }[]
+> = Object.entries(groups).reduce((acc, [name, links]) => {
+  const validLinks = (links as any[]).filter(
+    (link) => link.getHref() && link.condition(),
+  );
+  if (validLinks.length > 0) {
+    acc[name] = validLinks;
+  }
+  return acc;
+}, {});
+
+const extraContent = [data.resources, data.tests]
+  .filter((s) => s && s.length)
+  .map(createMarkdownComponent)
+
+const sharedContent = [data.shared]
+  .filter((s) => s && s.length)
+  .map(createMarkdownComponent)
+---
+
+<section class="p-4">
+  <div class="grid grid-cols-1 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {
+        Object.entries(filteredGroups).map(([name, links]) => (
+          <div class="p-2">
+            <h3 class="text-x font-bold mb-2">
+              <Translation>{name}</Translation>
+            </h3>
+            <ul class="list-disc pl-6">
+              {links.map((link) => (
+                <Link href={link.getHref()} className={LINK_CLASSES}>
+                  <Translation>{link.label}</Translation>
+                </Link>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+    {
+      extraContent.length > 0 && (
+        <div class="p-4">
+          <h3 class="text-xl font-bold mb-2">
+            <Translation>Extras</Translation>
+          </h3>
+          <div class="grid grid-cols-1 gap-4 extra-resources">
+            {extraContent.map(async (Content) => (
+              <Content class="extra-resource" />
+            ))}
+          </div>
+        </div>
+      )
+    }
+    {
+      sharedContent.length > 0 && (
+        <div class="p-4">
+          <div class="grid grid-cols-1 gap-4 extra-resources">
+            {sharedContent.map(async (Content) => (
+              <Content class="extra-resource" />
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>

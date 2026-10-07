@@ -1,0 +1,100 @@
+---
+import Translate from "@polymech/astro-base/components/i18n.astro";
+import { Img } from "imagetools/components";
+interface Props {
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  imageSrc: string;
+  imageAlt?: string;
+}
+
+const {
+  title = "Marketplace",
+  description = "",
+  buttonText = "Shop",
+  buttonLink = "/en/shop",
+  imageSrc = "/images/home/shop.png",
+  imageAlt = "",
+} = Astro.props;
+---
+
+<section>
+  <div class="py-2">
+    <div
+      class="flex flex-col md:flex-row gap-6 p-4 bg-white rounded-xl overflow-hidden relative"
+    >
+      <!-- Image takes 50% -->
+      <div class="w-full md:w-1/2">
+        <Img
+          src={imageSrc}
+          alt={imageAlt}
+          attributes={{
+            img: {
+              class:
+                "w-full max-w-100 rounded-lg hover:ring-2 hover:ring-blue-500 aspect-square object-contain",
+            },
+          }}
+        />
+      </div>
+
+      <!-- Text content takes the other 50% -->
+      <div class="w-full md:w-1/2 flex flex-col justify-start">
+        <h1 class="text-lg text-neutral-600 font-mono tracking-tight uppercase">
+          <Translate>{title}</Translate>
+        </h1>
+        <p class="text-sm text-neutral-500">
+          <Translate>{description}</Translate>
+        </p>
+        <div class="flex mt-6">
+          <a
+            href={buttonLink}
+            title="link to your page"
+            aria-label="your label"
+            class="relative group overflow-hidden pl-4 font-mono h-14 flex space-x-6 items-center bg-orange-500 hover:bg-black duration-300 rounded-xl justify-between"
+          >
+            <span class="relative uppercase text-xs text-white"
+              ><Translate>{buttonText}</Translate></span
+            >
+            <div
+              aria-hidden="true"
+              class="w-12 text-white transition duration-300 -translate-y-7 group-hover:translate-y-7"
+            >
+              <div class="h-14 flex">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6 m-auto fill-white"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"></path>
+                </svg>
+              </div>
+              <div class="h-14 flex">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6 m-auto fill-white"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

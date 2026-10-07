@@ -1,0 +1,461 @@
+{
+  "model": "anthropic/claude-3.7-sonnet:thinking",
+  "messages": [
+    {
+      "role": "user",
+      "content": "## Map\r\n\r\n- skip checked todos\r\n- dont comment\r\n- simple markup, for errors, use a dedicated error component\r\n\r\n- [ ] complete & self-containing Astro component, tailwind: Google Maps Static API, pass location array & Options as props, default to 2 locations in Lamu, save in ./map.astro\r\n- [ ] document all in ./map.md, including API key setup\r\n- [ ] save all TS types in ./map-types.ts\r\n\r\nexport interface GeoPos {\r\n\tlon: number\r\n\tlat: number\r\n}\r\n\r\nexport interface Location {\r\n    geo:GeoPos\r\n    title:string\r\n}\r\n\r\nexport interface Options{\r\n    zoom?:number\r\n    api_key?:string\r\n}\r\n"
+    },
+    {
+      "role": "user",
+      "content": "USER Preferences : undefined"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "list_files",
+        "description": "List all files in a directory",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "directory": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string",
+              "optional": true
+            }
+          },
+          "required": [
+            "directory"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_files",
+        "description": "Reads files in a directory with a given pattern",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "directory": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string",
+              "optional": true
+            }
+          },
+          "required": [
+            "directory"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "remove_file",
+        "description": "Remove a file at given path",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "rename_file",
+        "description": "Rename or move a file or directory",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "src": {
+              "type": "string"
+            },
+            "dst": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "modify_project_files",
+        "description": "Create or modify existing project files in one shot, preferably used for creating project structure)",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "base64 encoded string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "content"
+                ]
+              }
+            }
+          },
+          "required": [
+            "files"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write_file",
+        "description": "Writes to a file, given a path and content (base64). No directory or file exists check needed!",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "base64 encoded string"
+                }
+              }
+            }
+          },
+          "required": [
+            "file"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "file_exists",
+        "description": "check if a file or folder exists",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": [
+            "file"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_file",
+        "description": "read a file, at given a path",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": [
+            "file"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "init_repository",
+        "description": "Initialize a new git repository",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "commit_files_git",
+        "description": "Commit files using git",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "files"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "ask_question",
+        "description": "Ask user a simple question and get response",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "question": {
+              "type": "string",
+              "description": "Question to ask the user"
+            },
+            "default": {
+              "type": "string",
+              "description": "Default answer",
+              "optional": true
+            }
+          },
+          "required": [
+            "question"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "choose_option",
+        "description": "Ask user to choose from multiple options",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "Message to show the user"
+            },
+            "choices": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of choices"
+            },
+            "multiple": {
+              "type": "boolean",
+              "description": "Allow multiple selections",
+              "optional": true
+            }
+          },
+          "required": [
+            "message",
+            "choices"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "execute_command",
+        "description": "Execute a terminal command and capture output",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "Command to execute"
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Command arguments",
+              "optional": true
+            },
+            "cwd": {
+              "type": "string",
+              "description": "Working directory for command execution",
+              "optional": true
+            },
+            "background": {
+              "type": "boolean",
+              "description": "Run command in background (non-blocking)",
+              "optional": true,
+              "default": false
+            },
+            "window": {
+              "type": "boolean",
+              "description": "Open command in new terminal window",
+              "optional": true,
+              "default": false
+            },
+            "detached": {
+              "type": "boolean",
+              "description": "Run process detached from parent",
+              "optional": true,
+              "default": false
+            }
+          },
+          "required": [
+            "command"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "google",
+        "description": "Searches Google for the given query",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "serpapi",
+        "description": "Searches Serpapi (finds locations (engine:google_local), places on the map (engine:google_maps) ) for the given query",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "engine": {
+              "type": "string",
+              "default": "google"
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "browse_page",
+        "description": "Browse a webpage and return its content as markdown, all links, images and pages main image",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "URL of the webpage to browse"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "send_email",
+        "description": "Sends an email",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "recipient": {
+              "type": [
+                "string",
+                "array"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "The email address of the recipient(s). Can be a single email or an array of emails. For \"me\", use the default email address"
+            },
+            "subject": {
+              "type": "string",
+              "description": "the subject",
+              "optional": true
+            },
+            "body": {
+              "type": "string",
+              "description": "Markdown formatted body of the email",
+              "optional": true
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "capture_screen",
+        "description": "Capture a screenshot and store it as file (jpg). Returns the path to the file",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ]
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": false
+}

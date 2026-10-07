@@ -1,0 +1,50 @@
+---
+import { IHowto } from "@/model/howto/howto.js";
+import { getCollection } from "astro:content";
+import List from "@/components/howtos/List.astro";
+
+import { LANGUAGES_PROD as LANGUAGES } from "../../../app/config.js";
+
+export async function getStaticPaths() {
+	const view = "howtos";
+	const items = await getCollection(view);
+	const categories = items.reduce(
+		(acc: Record<string, IHowto[]>, storeItem: any) => {
+			const category =
+				storeItem.data?.item?.category?.label || "uncategorized";
+			if (category === "uncategorized") {
+				return acc;
+			}
+			if (!acc[category]) {
+				acc[category] = [];
+			}
+			acc[category].push(storeItem.data.item);
+			return acc;
+		},
+		{},
+	);
+
+	const categoryKeys = Object.keys(categories).sort();
+	const all: unknown[] = [];
+	LANGUAGES.forEach((lang) => {
+		categoryKeys.forEach((item) => {
+			all.push({
+				params: {
+					locale: lang,
+					category: item.toLowerCase(),
+				},
+				props: {
+					page: item,
+					locale: lang,
+					category: item.toLowerCase(),
+					view,
+				},
+			});
+		});
+	});
+	return all;
+}
+const { page: page, ...rest } = Astro.props;
+---
+
+<List {...rest} />

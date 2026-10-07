@@ -1,0 +1,27 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Navigation from "@polymech/astro-base/components/global/Navigation.astro";
+import Footer from "@polymech/astro-base/components/global/Footer.astro";
+import { isRTL } from "../app/config.js";
+
+const { item, additionalKeywords, ...rest } = Astro.props;
+---
+
+<html
+  lang={Astro.currentLocale}
+  class="scroll-smooth"
+  dir={isRTL(Astro.currentLocale) ? "rtl" : "ltr"}
+>
+  <head>
+    <BaseHead item={item} {...rest} />
+  </head>
+  <body
+    class="bg-neutral-100 mx-auto 2xl:max-w-7xl flex flex-col min-h-svh p-4 text-neutral-500"
+  >
+    <Navigation />
+    <main class="grow">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

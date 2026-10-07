@@ -1,0 +1,48 @@
+{
+    "options": {
+        "simple": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "filters": "code"
+        },
+        "research": {
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion"
+        }
+    },
+    "instructions": {
+        "tone": [
+            { "flag": "formal", "text": "use a formal tone" },
+            { "flag": "friendly", "text": "Be friendly and approachable!" }
+        ],
+        "content": [
+            { "flag": "spellCheck", "text": "spell & grammar fix the text," },
+            { "flag": "removeEmojis", "text": "remove emojis" },
+            { "flag": "removePersonalPrefs", "text": "remove personal preferences or biases" },
+            { "flag": "removeRedundancy", "text": "remove redundancy, eg: we attached the files" },
+            { "flag": "shorten", "text": "shorten text if possible but preserve personality" }
+        ],
+        "moderation": [
+            { "flag": "mafiaFilter", "text": "remove references to preciousplastic, bazar and Discord" },
+            { "flag": "deprogramming", "text": "remove any brain/green washing, eg: sustainable, circular, recycling ... inflated prospects" },
+            { "flag": "emptiness", "text": "Rewrite the following text to remove any inflated or empty language, sugar-coated filler, and needless repetition. The result should be concise, direct, and preserve only the essential ideas." }
+        ],
+        "context": [
+            { "flag": "makerTutorials", "text": "Context: howto tutorials, for makers" },
+            { "flag": "units", "text": "Convert units, from metric to imperial and vice versa (in braces)" }
+        ],
+        "format": [
+            { "flag": "markdown", "text": "dont comment just return as Markdown" }
+        ]
+    },
+    "defaults": {
+        "tone": ["formal"],
+        "content": ["spellCheck", "removeEmojis", "removePersonalPrefs", "shorten"],
+        "moderation": ["mafiaFilter", "deprogramming", "emptiness"],
+        "context": ["makerTutorials", "units"],
+        "format": ["markdown"]
+    }
+} 

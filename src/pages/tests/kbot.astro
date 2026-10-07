@@ -1,0 +1,32 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Wrapper from "@/components/containers/Wrapper.astro"
+import KBot from "@/components/polymech/kbot.astro"
+import Map from "@/components/polymech/map.astro"
+const mapOptions = {
+  zoom: 9,
+  api_key: "AIzaSyCHsscCXksisHKMnUihOxl2X1mKny-qrqk"
+}
+
+---
+
+<BaseLayout>
+    <Wrapper variant="standard" class="py-4">
+        <section>
+            <div class="py-2 space-y-2">
+                <Map options={mapOptions} />
+                <div class="grid md:grid-cols-1 lg:grid-cols-1 gap-4" >
+                    <KBot router="openai" model="gpt-4.5-preview" mode="completion" template="code_simple" disabled={true}>
+                    </KBot>
+                    <KBot template="research" filters="code" renderer="md" cache dst="./temp/research-plastic.md" disabled={true}>
+                        Plastic types, as jsx, for Astro, nicely styled table, for nice people :)
+                    </KBot>
+                    <KBot filters="code" template="code_simple" cache dst="./temp/jsx2.md" renderer="jsx" disabled={true}>
+                        simple table, 3 rows, for astro, as jsx, ensure table styling with borders
+                    </KBot>
+                </div>
+            </div>
+        </section>        
+        </Wrapper
+    ></BaseLayout
+>

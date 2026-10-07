@@ -1,0 +1,27 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Wrapper from "@/components/containers/Wrapper.astro"
+import { getCollection } from "astro:content"
+import KBot from "@/components/polymech/kbot.astro"
+const locale = Astro.currentLocale
+const store = `${locale}/store/`
+
+import Map from "@/components/polymech/map.astro"
+
+const mapOptions = {
+  zoom: 9,
+  api_key: "AIzaSyCHsscCXksisHKMnUihOxl2X1mKny-qrqk"
+}
+
+---
+
+<BaseLayout>
+    <Wrapper variant="standard" class="py-4">
+        <section>
+            <div class="py-2 space-y-2">
+                <Map options={mapOptions} />                
+            </div>
+        </section>        
+        </Wrapper
+    ></BaseLayout
+>

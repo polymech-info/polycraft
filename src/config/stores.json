@@ -1,0 +1,8 @@
+{
+    "shop":{
+        "title": "Shop",
+        "description": "",
+        "items":"${OSR_ROOT}/products/products/**/config.json",
+        "root":"${OSR_ROOT}/products"
+    }
+}

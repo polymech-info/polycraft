@@ -1,0 +1,49 @@
+---
+import { createMarkdownComponent } from "@/base/index.js";
+import {  } from "@/base/i18n.js";
+import { ASSET_URL } from "config/config.js";
+import { fromMarkdown } from "mdast-util-from-markdown";
+
+import { toMarkdown } from "mdast-util-to-markdown";
+import { visit } from "unist-util-visit";
+import { Root, Image } from "mdast";
+
+// https://github.com/syntax-tree/mdast-util-mdxjs-esm?tab=readme-ov-file#when-to-use-this
+// https://github.com/syntax-tree/mdast-util-to-markdown?tab=readme-ov-file#list-of-extensions
+// https://chatgpt.com/c/67ba55c7-4c04-8001-b26b-bfa3a89aafb1
+
+interface Props {
+  markdown: string;
+  className?: string;
+  baseImageUrl?: string;
+  translate?: boolean;
+  data?: any;
+}
+const {
+  markdown,
+  className = "",
+  baseImageUrl = "",
+  translate = false,
+  data = {},
+  ...rest
+} = Astro.props as Props;
+
+const processImageUrls = (content: string, data: Record<string, string>) => {
+  const tree = fromMarkdown(content) as Root;
+  visit(tree, "image", (node: Image) => {
+    if (!node.url.startsWith("http") && !node.url.startsWith("/")) {
+      node.url = ASSET_URL(node.url, data);
+    }
+  })
+  const markup = toMarkdown(tree);
+  return markup;
+}
+
+const ReadmeContent = await createMarkdownComponent(
+  processImageUrls(markdown, data),
+)
+---
+
+<div class={className}>
+  <ReadmeContent />
+</div>

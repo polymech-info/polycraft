@@ -1,0 +1,20 @@
+{
+  "name": "file-deployment",
+  "version": "1.0.0",
+  "description": "Simple deployment script using Node-SSH",
+  "main": "deploy.js",
+  "type": "commonjs",
+  "scripts": {
+    "deploy": "node deploy.js"
+  },
+  "keywords": [
+    "deployment"
+  ],
+  "author": "Guenter",
+  "license": "ISC",
+  "dependencies": {
+    "@plastichub/fs": "file:../../../osr/osr-mono/packages/fs",
+    "@plastichub/osr-commons": "file:../../../osr/osr-mono/packages/osr-commons",
+    "node-ssh": "^13.2.0"
+  }
+}

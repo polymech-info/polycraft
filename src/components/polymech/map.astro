@@ -1,0 +1,336 @@
+---
+import { Location, Options } from './map-types'
+interface Props {
+    locations?: Location[];
+    options?: Options;
+}
+const { locations = [
+    // Historic Sites
+    {
+        geo: { lat: -2.269456, lon: 40.902096 },
+        title: 'Lamu Old Town',
+        group: 'historic_sites',
+        website: 'https://whc.unesco.org/en/list/1055/'
+    },
+    {
+        geo: { lat: -2.267922, lon: 40.901592 },
+        title: 'Lamu Fort',
+        group: 'historic_sites'
+    },
+    {
+        geo: { lat: -2.268811, lon: 40.902344 },
+        title: 'Lamu Museum',
+        group: 'historic_sites',
+        website: 'https://museums.or.ke/lamu-museum/'
+    },
+    {
+        geo: { lat: -2.267500, lon: 40.901850 },
+        title: 'Riyadha Mosque',
+        group: 'religious_sites',
+        website: 'https://www.visitkenya.com/lamu/riyadha-mosque'
+    },
+    {
+        geo: { lat: -2.268200, lon: 40.901100 },
+        title: 'German Post Office Museum',
+        group: 'historic_sites'
+    },
+    
+    // Beaches
+    {
+        geo: { lat: -2.272012, lon: 40.890586 },
+        title: 'Shela Beach',
+        group: 'beaches',
+        website: 'https://www.visitlamu.org/shela-beach'
+    },
+    {
+        geo: { lat: -2.336103, lon: 40.902733 },
+        title: 'Manda Beach',
+        group: 'beaches'
+    },
+    {
+        geo: { lat: -2.408333, lon: 40.866667 },
+        title: 'Kipungani Beach',
+        group: 'beaches'
+    },
+    {
+        geo: { lat: -2.243333, lon: 40.913333 },
+        title: 'Matondoni Beach',
+        group: 'beaches'
+    },
+    
+    // Hotels & Accommodations
+    {
+        geo: { lat: -2.274578, lon: 40.889988 },
+        title: 'The Majlis Resort',
+        group: 'hotels',
+        website: 'https://themajlisresorts.com'
+    },
+    {
+        geo: { lat: -2.267825, lon: 40.908644 },
+        title: 'Lamu House Hotel',
+        group: 'hotels'
+    },
+    {
+        geo: { lat: -2.273205, lon: 40.889925 },
+        title: 'Peponi Hotel',
+        group: 'hotels',
+        website: 'https://www.peponihotel.com'
+    },
+    {
+        geo: { lat: -2.269872, lon: 40.904167 },
+        title: 'Jannat House',
+        group: 'hotels'
+    }
+], options = {} } = Astro.props;
+const { zoom: manualZoom = 12, api_key = '', width = 800, height = 400, fitToBounds = true } = options;
+
+// Group locations
+const groupedLocations = locations.reduce((acc, loc) => {
+    const group = loc.group || 'default';
+    if (!acc[group]) {
+        acc[group] = [];
+    }
+    acc[group].push(loc);
+    return acc;
+}, {} as Record<string, Location[]>);
+
+// Define colors for different groups
+const groupColors: Record<string, string> = {
+    default: 'red-600',
+    historic_sites: 'amber-600',
+    beaches: 'sky-500',
+    hotels: 'emerald-600',
+    religious_sites: 'indigo-600',
+    // Add more predefined colors for groups
+};
+
+// Define a mapping between Tailwind colors and Google Maps colors
+const tailwindToGoogleColors: Record<string, string> = {
+    'gray': 'gray',
+    'sky': 'blue',
+    'blue': 'blue',
+    'pink': 'pink'
+};
+
+// Get a color for a group
+const getColorForGroup = (group: string): string => {
+    if (groupColors[group]) {
+        return groupColors[group];
+    }
+    
+    // Generate colors for groups that don't have predefined colors
+    const colors = ['blue-600', 'emerald-500', 'violet-600', 'amber-500', 'yellow-500', 'pink-500', 'stone-600', 'indigo-500', 'teal-600', 'orange-500', 'rose-500'];
+    const index = Object.keys(groupColors).length % colors.length;
+    groupColors[group] = colors[index];
+    return groupColors[group];
+};
+
+// Flatten grouped locations with indices for marker labels
+let allLocationsWithIndices: Array<{ location: Location, index: number }> = [];
+let currentIndex = 0;
+
+Object.entries(groupedLocations).forEach(([group, locs]) => {
+    locs.forEach(loc => {
+        allLocationsWithIndices.push({ 
+            location: loc, 
+            index: currentIndex++
+        });
+    });
+});
+
+// Generate markers query param with different colors for each group
+const markersParam = Object.entries(groupedLocations).map(([group, locs]) => {
+    const tailwindColor = getColorForGroup(group);
+    // Extract the base color name for Google Maps (before the dash)
+    const colorBase = tailwindColor.split('-')[0];
+    // Map Tailwind color to Google Maps color
+    const googleMapColor = tailwindToGoogleColors[colorBase] || 'red';
+    
+    return locs.map((loc, groupIndex) => {
+        const index = allLocationsWithIndices.findIndex(item => item.location === loc);
+        return `markers=color:${googleMapColor}%7Clabel:${String.fromCharCode(65 + index)}%7C${loc.geo.lat},${loc.geo.lon}`;
+    }).join('&');
+}).join('&');
+
+// Calculate bounds of all locations
+const calculateBounds = (locs: Location[]) => {
+    if (locs.length === 0) return { 
+        minLat: 0, maxLat: 0, 
+        minLon: 0, maxLon: 0,
+        centerLat: 0, centerLon: 0
+    };
+    
+    let minLat = locs[0].geo.lat;
+    let maxLat = locs[0].geo.lat;
+    let minLon = locs[0].geo.lon;
+    let maxLon = locs[0].geo.lon;
+    
+    locs.forEach(loc => {
+        minLat = Math.min(minLat, loc.geo.lat);
+        maxLat = Math.max(maxLat, loc.geo.lat);
+        minLon = Math.min(minLon, loc.geo.lon);
+        maxLon = Math.max(maxLon, loc.geo.lon);
+    });
+    
+    return { minLat, maxLat, minLon, maxLon };
+};
+
+// Calculate appropriate zoom level based on bounds
+const calculateZoomLevel = (bounds: { minLat: number, maxLat: number, minLon: number, maxLon: number }) => {
+    // Handle edge cases
+    if (!bounds || 
+        bounds.maxLat === bounds.minLat || 
+        bounds.maxLon === bounds.minLon) {
+        return manualZoom;
+    }
+    
+    // Add more padding (30%) to ensure all pins are visible with breathing room
+    const padding = 0.3;
+    
+    // Apply padding to the bounds
+    const latDiff = bounds.maxLat - bounds.minLat;
+    const lonDiff = bounds.maxLon - bounds.minLon;
+    
+    const paddedMinLat = bounds.minLat - (latDiff * padding);
+    const paddedMaxLat = bounds.maxLat + (latDiff * padding);
+    const paddedMinLon = bounds.minLon - (lonDiff * padding);
+    const paddedMaxLon = bounds.maxLon + (lonDiff * padding); 
+    
+    // Calculate using the Mercator projection formula
+    // This is a more reliable algorithm for Google Maps Static API
+    
+    // Helper function to convert latitude to radians and apply Mercator projection
+    const latRad = (lat: number) => {
+        const sin = Math.sin(lat * Math.PI / 180);
+        const radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
+        return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
+    };
+    
+    // Calculate world coordinate spans
+    const latFraction = (latRad(paddedMaxLat) - latRad(paddedMinLat)) / Math.PI;
+    const lngFraction = ((paddedMaxLon - paddedMinLon) % 360) / 360;
+    
+    // Calculate zoom levels based on the map container dimensions
+    const latZoom = Math.log(height / 256 / latFraction) / Math.LN2;
+    const lngZoom = Math.log(width / 256 / lngFraction) / Math.LN2;
+    
+    // Use the smaller of the two zoom levels
+    let zoom = Math.min(latZoom, lngZoom);
+    
+    // Floor the zoom level to get a nice integer
+    zoom = Math.floor(zoom);
+    
+    // Limit zoom for better usability
+    const ZOOM_MAX = 18;
+    zoom = Math.min(zoom, ZOOM_MAX);
+    
+    // Ensure a minimum zoom level
+    zoom = Math.max(zoom, 1);
+    
+    // If calculated zoom is very low (showing too much of the world),
+    // but pins are actually close together, increase zoom
+    if (zoom < 3 && latDiff < 5 && lonDiff < 5) {
+        zoom = Math.min(12, Math.max(zoom + 3, 8));
+    }
+    
+    // Sanity check - use manual zoom if calculation failed
+    if (isNaN(zoom)) {
+        zoom = manualZoom;
+    }
+    
+    return zoom;
+};
+
+// Calculate center point based on chosen method
+let centerLat, centerLon, zoom;
+
+if (fitToBounds && locations.length > 1) {
+    const bounds = calculateBounds(locations);
+    centerLat = (bounds.minLat + bounds.maxLat) / 2;
+    centerLon = (bounds.minLon + bounds.maxLon) / 2;
+    zoom = calculateZoomLevel(bounds);
+} else {
+    // Use simple average for center if fitToBounds is false or only one location
+    centerLat = locations.reduce((sum, loc) => sum + loc.geo.lat, 0) / locations.length;
+    centerLon = locations.reduce((sum, loc) => sum + loc.geo.lon, 0) / locations.length;
+    zoom = manualZoom;
+}
+
+const googleMapsUrl = api_key ?
+    `https://maps.googleapis.com/maps/api/staticmap?center=${centerLat},${centerLon}&zoom=${zoom}&size=${width}x${height}&${markersParam}&key=${api_key}` : null;
+
+const hasError = !api_key;
+
+// Debug information (will appear in server logs)
+console.log(`Map Debug - Zoom: ${zoom}, Center: (${centerLat}, ${centerLon})`);
+console.log(`Map Debug - Bounds: Min(${calculateBounds(locations).minLat}, ${calculateBounds(locations).minLon}), Max(${calculateBounds(locations).maxLat}, ${calculateBounds(locations).maxLon})`);
+---
+
+<div class="map-container w-full max-w-4xl mx-auto border border-gray-200 rounded-lg overflow-hidden shadow-md m-4">
+    {!hasError ? (
+        <div class="relative w-full h-full">
+            <img
+                src={googleMapsUrl} 
+                alt="Map showing locations" 
+                class="w-full h-auto" width={width} 
+                height={height}
+            />
+            <div class="bottom-0 w-full bg-white/[70%] p-4 backdrop-blur-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+                    {Object.entries(groupedLocations).map(([group, locs]) => (
+                        <div key={group} class="space-y-1">
+                            {group !== 'default' && (
+                                <h3 class="font-bold text-gray-700 mb-2">{group.toUpperCase()}</h3>
+                            )}
+                            <ul class="space-y-1">
+                                {locs.map((loc) => {
+                                    const index = allLocationsWithIndices.findIndex(item => item.location === loc);
+                                    const tailwindColor = getColorForGroup(group) || 'red-600';
+                                    return (
+                                        <li key={index} class="flex items-center gap-2">
+                                            <span 
+                                                class={`flex w-6 h-6 rounded-full bg-${tailwindColor} text-white items-center justify-center text-sm font-bold`}
+                                            >
+                                                {String.fromCharCode(65 + index)}
+                                            </span>
+                                            <span class="font-medium">
+                                                <a 
+                                                    href={`https://www.google.com/maps?q=${loc.geo.lat},${loc.geo.lon}&z=12`} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    class="text-blue-600 hover:underline"
+                                                >
+                                                    {loc.title}
+                                                </a>
+                                                {loc.website && (
+                                                    <a 
+                                                        href={loc.website}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer" 
+                                                        class="ml-2 text-sm text-gray-600 hover:underline"
+                                                    >
+                                                        🌐
+                                                    </a>
+                                                )}
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    ) : (
+        <div class="bg-red-50/10 text-red-700 p-4 rounded-md border border-red-200 m-4">
+            <h3 class="text-lg font-medium mb-2">Error: Missing API Key</h3>
+            <p>You need to provide a Google Maps API key to use this component. Refer to the documentation in map.md for instructions.</p>
+        </div>
+    )}
+</div>
+<style>
+    .map-container {
+        
+    }
+</style>

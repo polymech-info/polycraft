@@ -1,0 +1,276 @@
+---
+import fs from "fs";
+import path from "path";
+import { decode } from "html-entities";
+import { IHowto, asset_local_rel } from "@/model/howto/howto.js";
+import { i18n as Translate } from "@polymech-astro/base";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Wrapper from "@/components/containers/Wrapper.astro";
+import GalleryK from "@/components/polymech/gallery.astro";
+import { files, forward_slash } from "@polymech/commons";
+import pMap from "p-map";
+import { sync as exists } from "@polymech/fs/exists";
+import { sync as read } from "@polymech/fs/read";
+import { createHTMLComponent, createMarkdownComponent } from "@/base/index.js";
+import { translate } from "@polymech/astro-base/base/i18n.js";
+import { applyFilters, shortenUrl } from "@/base/filters.js";
+// import { extract, extract_learned_skills, references } from "@/base/kbot.js";
+import {
+  HOWTO_FILES_WEB,
+  HOWTO_FILES_ABS,
+  I18N_SOURCE_LANGUAGE,
+  HOWTO_COMPLETE_RESOURCES,
+  HOWTO_COMPLETE_SKILLS,
+  HOWTO_ADD_HARDWARE,
+  HOWTO_LOCAL_RESOURCES,
+  HOWTO_ADD_RESOURCES,
+  HOWTO_ADD_REFERENCES,
+  HOWTO_EDIT_URL,
+} from "config/config.js";
+
+import { filter } from "@/base/kbot.js";
+
+interface Props {
+  howto: IHowto;
+}
+const { frontmatter: howto } = Astro.props;
+const howto_abs = HOWTO_FILES_ABS(howto.slug);
+
+let model_files: any = [...files(howto_abs, "**/**/*.(step|stp)")];
+model_files = model_files.map((f) =>
+  forward_slash(`${howto.slug}/${path.relative(path.resolve(howto_abs), f)}`),
+);
+
+const content = async (str: string) =>
+  await translate(str, I18N_SOURCE_LANGUAGE, Astro.currentLocale);
+const component = async (str: string) =>
+  await createMarkdownComponent(await content(str));
+const componentHTML = async (str: string) =>
+  await createHTMLComponent(await content(str));
+
+const stepsWithFilteredMarkdown = await pMap(
+  howto.steps,
+  async (step) => ({
+    ...step,
+    filteredMarkdownComponent: await component(step.text),
+  }),
+  { concurrency: 1 },
+);
+
+const Description = component(howto.description);
+const authorGeo = howto?.user?.geo || {
+  countryName: "Unknown",
+  data: { urls: [] },
+};
+
+const authorLinks = (howto?.user?.data.urls || []).filter(
+  (l) => !l.url.includes("one_army") && !l.url.includes("bazar"),
+);
+//////////////////////////////////////////////////////////////
+//
+//  Resources
+//
+//////////////////////////////////////////////////////////////
+const howto_resources_default = `# Resources`;
+const howto_resources_path = path.join(howto_abs, "resources.md");
+
+let howto_resources = exists(howto_resources_path)
+  ? read(howto_resources_path, "string") || howto_resources_default
+  : howto_resources_default;
+
+const howto_references_default = `# References`;
+const howto_references_path = path.join(howto_abs, "references.md");
+let howto_references = exists(howto_resources_path)
+  ? read(howto_references_path, "string") || howto_references_default
+  : howto_references_default;
+
+const contentAll = `${howto.content}`;
+
+if (HOWTO_COMPLETE_SKILLS) {
+  const references_extra = await filter(contentAll, "learned_skills");
+  howto_resources = `${howto_resources}\n\n ${references_extra}`;
+}
+if (HOWTO_LOCAL_RESOURCES && howto.user && howto.user.geo) {
+  const references_extra = await filter(
+    `Location: ${authorGeo.countryName}`,
+    "local",
+  );
+  howto_resources = `${howto_resources}\n\n ${references_extra}`;
+}
+
+const Resources = component(howto_resources);
+const References = component(howto_references);
+/*
+const EditLink = () => {
+  return (
+    <a href={HOWTO_EDIT_URL(howto.slug, Astro.currentLocale)}>Edit</a>
+  )
+}
+*/
+---
+
+<BaseLayout class="markdown-content bg-gray-100" frontmatter={howto}>
+  <Wrapper>
+    <article class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <header class="p-4">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+          <Translate>{howto.title}</Translate>
+        </h1>
+        <GalleryK images={[{ src: howto.cover_image.src, alt: "" }]} />
+        <div class="flex flex-wrap gap-2 mb-4">
+          {
+            howto.tags.map((tag) => (
+              <span class="bg-orange-400 text-white text-xs px-3 py-1 rounded-full">
+                <Translate>{tag.toUpperCase()}</Translate>
+              </span>
+            ))
+          }
+        </div>
+      </header>
+    </article>
+
+    <section class="meta-view bg-white rounded-lg p-4 mt-4 truncate">
+      <ul class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-8 mb-8">
+        <li>
+          <strong><Translate>Difficulty:</Translate></strong>
+          <Translate>{howto.difficulty_level}</Translate>
+        </li>
+        <li>
+          <strong><Translate>Time Required:</Translate></strong>
+          <Translate>{decode(howto.time)}</Translate>
+        </li>
+        <li>
+          <strong><Translate>Views:</Translate></strong>{howto.total_views}
+        </li>
+        <li>
+          <strong><Translate>Creator:</Translate></strong>{howto._createdBy}
+        </li>
+        <li>
+          <strong><Translate>Country:</Translate></strong>{
+            authorGeo.countryName
+          }
+        </li>
+        <li>
+          <strong><Translate>Email:</Translate></strong>
+          <a
+            class="text-orange-600 underline"
+            href={`mailto:${authorLinks.find((link) => link.name.toLowerCase() === "email")?.url.replace("mailto:", "")}`}
+          >
+            {
+              authorLinks
+                .find((link) => link.name.toLowerCase() === "email")
+                ?.url.replace("mailto:", "")
+            }
+          </a>
+        </li>
+        {
+          authorLinks
+            .filter((l) => l.name.toLowerCase() !== "email")
+            .map((link) => (
+              <li>
+                <strong>{link.name}:</strong>
+                <a
+                  class="text-orange-600 underline"
+                  href={link.url}
+                  target="_blank"
+                >
+                  {shortenUrl(link.url)}
+                </a>
+              </li>
+            ))
+        }
+        <li>
+          <strong><Translate>Downloads:</Translate></strong>{
+            howto.total_downloads
+          }
+        </li>
+      </ul>
+    </section>
+
+    <section class="bg-white p-8">
+      <div class="mb-8 markdown-content">
+        <Description />
+      </div>
+      <a
+        href={HOWTO_FILES_WEB(howto.slug)}
+        class="inline-block py-2 px-4 bg-orange-500 hover:bg-orange-700 text-white rounded-full mb-8"
+        ><Translate>Browse Files</Translate></a
+      >
+    </section>
+
+    <section class="px-8 py-8 bg-orange-50">
+      <h2 class="font-bold mb-4 text-xl">
+        <Translate>Table of Contents</Translate>
+      </h2>
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 list-decimal p-4">
+        {
+          stepsWithFilteredMarkdown.map((step, idx) => (
+            <li>
+              <a
+                href={`#step-${idx + 1}`}
+                class="text-orange-600 hover:underline"
+              >
+                <Translate>{step.title}</Translate>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="border-gray-300 p-0 lg:p-6 mt-8">
+      <ol class="space-y-10">
+        {
+          stepsWithFilteredMarkdown.map((step, idx) => (
+            <li
+              id={`step-${idx + 1}`}
+              class="bg-white shadow-sm rounded-lg p-2 lg:p-6"
+            >
+              <div class="mb-4 flex items-center">
+                <span class="bg-orange-500 text-xl font-bold text-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                  {idx + 1}
+                </span>
+                <h3 class="text-xl font-bold">
+                  <a
+                    href={`#step-${idx + 1}`}
+                    class="text-orange-600 hover:underline"
+                  >
+                    <Translate>{step.title}</Translate>
+                  </a>
+                </h3>
+              </div>
+              <div class="markdown-content">
+                <step.filteredMarkdownComponent />
+              </div>
+              {step.images?.length > 0 && <GalleryK images={step.images} />}
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section
+      class="bg-white shadow-lg rounded-lg border-gray-300 p-4 lg:p-6 mt-8 markdown-content"
+    >
+      <Resources />
+    </section>
+    <section
+      class="bg-white shadow-lg rounded-lg border-gray-300 p-4 lg:p-6 mt-8 markdown-content"
+    >
+      <References />
+    </section>
+    <footer class="p-8 text-sm border-t bg-white text-gray-600">
+      <div class="flex justify-between">
+        <span
+          ><Translate>Created on</Translate>: {
+            new Date(howto._created).toLocaleDateString()
+          }</span
+        >
+        <span
+          >{howto.votedUsefulBy.length}
+          <Translate>people found this useful</Translate></span
+        >
+      </div>
+    </footer>
+  </Wrapper>
+</BaseLayout>

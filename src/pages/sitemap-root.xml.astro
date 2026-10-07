@@ -1,0 +1,24 @@
+---
+export async function GET() {
+    console.log('sitemap-index.xml.astro')
+  const locales = ['en', 'es', 'fr'];
+  const baseUrl = 'https://yourdomain.com';
+
+  let sitemaps = locales
+    .map(locale => `<sitemap><loc>${baseUrl}/sitemap-${locale}.xml</loc></sitemap>`)
+    .join('');
+
+  return new Response(
+    `<?xml version="1.0" encoding="UTF-8"?>
+     <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+       ${sitemaps}
+     </sitemapindex>`,
+    {
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+    }
+  );
+}
+---
+

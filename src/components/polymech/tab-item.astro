@@ -1,0 +1,65 @@
+---
+import { translate } from '@/base/i18n.js';
+import { I18N_SOURCE_LANGUAGE } from "config/config.js";
+
+// A simple slugify helper (you could import this from a utility file instead)
+function slugify(text: string) {
+  return text
+    .normalize('NFD')                 // Normalise accented characters
+    .replace(/[\u0300-\u036f]/g, '')  // Strip accents
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')      // Replace non-alphanumeric with hyphens
+    .replace(/^-+|-+$/g, '');         // Trim leading/trailing hyphens
+}
+
+export interface Props {
+  title: string;
+  clazz?: string;
+  src?: string; // optional
+}
+
+const {
+  title = 'title',
+  clazz = 'unstyled',
+  src,
+} = Astro.props;
+
+// Compute the slug from the original title
+const id = slugify(title);
+
+// Then retrieve the user's locale and translate the title
+const locale = Astro.currentLocale;
+const title_i18n = await translate(title, I18N_SOURCE_LANGUAGE, locale);
+---
+
+<button
+  id={id}
+  slot="tab"
+  class="inline-flex whitespace-nowrap border-b-2 border-transparent py-2 px-3 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:border-b-[#9249ed] hover:text-[#9249ed] aria-selected:border-b-[#9249ed] aria-selected:text-[#9249ed]"
+>{title_i18n}</button>
+
+<div slot="panel" class={clazz}>
+  {src ? (
+    <div class="iframe-container">
+      <iframe src={src}></iframe>
+    </div>
+  ) : (
+    <slot />
+  )}
+</div>
+
+<style>
+  .iframe-container {
+    width: 100%;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 ratio; adjust if needed */
+    height: 0;
+  }
+
+  .iframe-container iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+</style>

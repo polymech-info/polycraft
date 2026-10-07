@@ -1,0 +1,292 @@
+---
+import { group_by_cat } from "@/model/howto/howto.js";
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Sidebar from "@polymech/astro-base/components/sidebar/Sidebar.astro";
+import MobileToggle from "@polymech/astro-base/components/sidebar/MobileToggle.astro";
+import { getSidebarConfig } from "@polymech/astro-base/config/sidebar";
+import HowtoCard from "@/components/howtos/HowtoCard.astro";
+import Translate from "@polymech/astro-base/components/i18n.astro";
+import { LANGUAGES_PROD as LANGUAGES } from "config/config.js";
+import type { IHowto } from "@/model/howto/howto.js";
+
+const view = "howtos";
+
+const all = await getCollection(view);
+const items = all.map((storeItem) => storeItem.data.item) as IHowto[];
+const groups = group_by_cat(items);
+const locale = Astro.currentLocale;
+const sidebarConfig = getSidebarConfig();
+const categories = Object.keys(groups).sort();
+
+// Create organized page-level navigation for categories
+const organizedCategories: any[] = [];
+
+// Separate and organize categories
+const uncategorizedItems =
+  groups["Uncategorized"] || groups["uncategorized"] || [];
+const categorizedItems = categories
+  .filter(
+    (cat) => cat.toLowerCase() !== "uncategorized" && cat !== "Uncategorized",
+  )
+  .sort();
+
+// Add categorized items with better organization
+if (categorizedItems.length > 0) {
+  organizedCategories.push({
+    label: "Browse by Category",
+    collapsed: false,
+    items: categorizedItems.map((category) => ({
+      label: `${category} (${groups[category].length})`,
+      collapsed: true,
+      isSubGroup: true, // This makes it a collapsible subgroup
+      items: groups[category]
+        .slice(0, 8)
+        .map((howto: IHowto) => ({
+          label: howto.title,
+          href: `/${locale}/howtos/${howto.slug}`,
+          isCurrent: false,
+        }))
+        .concat(
+          groups[category].length > 8
+            ? [
+                {
+                  label: `View all ${groups[category].length} guides...`,
+                  href: `/${locale}/howto-category/${category.toLowerCase().replace(/\s+/g, "-")}`,
+                  isCurrent: false,
+                },
+              ]
+            : [],
+        ),
+    })),
+  });
+}
+
+// Then, add uncategorized items if they exist
+if (uncategorizedItems.length > 0) {
+  organizedCategories.push({
+    label: `Uncategorized (${uncategorizedItems.length})`,
+    collapsed: true,
+    items: uncategorizedItems
+      .slice(0, 10)
+      .map((uncatHowto: IHowto) => ({
+        label: uncatHowto.title,
+        href: `/${locale}/howtos/${uncatHowto.slug}`,
+        isCurrent: false,
+      }))
+      .concat(
+        uncategorizedItems.length > 10
+          ? [
+              {
+                label: `View all ${uncategorizedItems.length} guides...`,
+                href: `/${locale}/howtos/uncategorized`,
+                isCurrent: false,
+              },
+            ]
+          : [],
+      ),
+  });
+}
+
+// Add quick navigation
+organizedCategories.unshift({
+  label: "Quick Navigation",
+  collapsed: false,
+  items: [
+    {
+      label: "All Guides",
+      href: `/${locale}/howtos`,
+      isCurrent: true, // This is the current page
+    },
+    {
+      label: "Recently Added",
+      href: `/${locale}/howtos/recent`,
+      isCurrent: false,
+    },
+  ],
+});
+
+const pageNavigation = organizedCategories;
+
+export async function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({
+    params: { locale: lang },
+  }));
+}
+---
+
+<BaseLayout
+  frontmatter={{
+    title: "How-To Guides",
+    description: "Browse our collection of step-by-step how-to guides",
+  }}
+>
+  <div class="layout-with-sidebar">
+    <!-- Mobile Toggle -->
+    <MobileToggle />
+
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper">
+      <Sidebar
+        config={sidebarConfig}
+        currentUrl={Astro.url}
+        pageNavigation={pageNavigation}
+      />
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content-with-sidebar">
+      <div class="container mx-auto px-4 py-4 md:px-6 md:py-6">
+        <section class="py-8">
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">
+              <Translate>How-To Guides</Translate>
+            </h1>
+            <p class="text-lg text-gray-600 mb-6">
+              <Translate
+                >{all.length} guide{all.length !== 1 ? "s" : ""} available across
+                {categories.length} categories</Translate
+              >
+            </p>
+          </div>
+
+          <!-- All Howtos Grid -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">
+              <Translate>All Guides</Translate>
+            </h2>
+            <div
+              class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
+            >
+              {
+                items.map((item) => {
+                  const correspondingItem = all.find(
+                    (storeItem) => storeItem.data.item.slug === item.slug,
+                  );
+                  return correspondingItem ? (
+                    <HowtoCard
+                      url={`/${locale}/howtos/${item.slug}`}
+                      title={item.title}
+                      description={item.description}
+                      alt={item.title}
+                      category={item.category?.label}
+                      difficulty_level={item.difficulty_level}
+                      time={item.time}
+                      total_views={item.total_views}
+                      total_downloads={item.total_downloads}
+                      author={item._createdBy}
+                      tags={
+                        item.tags?.map((tag) =>
+                          typeof tag === "string" ? tag : tag.label,
+                        ) || []
+                      }
+                      locale={locale}
+                      howto={item}
+                    />
+                  ) : null;
+                })
+              }
+            </div>
+          </div>
+
+          <!-- Categories Section -->
+          <div class="space-y-12" id="categories">
+            {
+              categories.map((category) => (
+                <section class="category-section">
+                  <div class="flex items-center justify-between mb-6">
+                    <h2
+                      id={category.toLowerCase().replace(/\s+/g, "-")}
+                      class="text-2xl font-semibold text-gray-900 cursor-pointer hover:text-orange-600 transition-colors"
+                      onclick={`window.location.hash = '${category.toLowerCase().replace(/\s+/g, "-")}'`}
+                    >
+                      <Translate>{category}</Translate>
+                    </h2>
+                  </div>
+
+                  <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {groups[category].slice(0, 8).map((howto: IHowto) => {
+                      const correspondingItem = all.find(
+                        (storeItem) => storeItem.data.item.slug === howto.slug,
+                      );
+                      return correspondingItem ? (
+                        <HowtoCard
+                          url={`/${locale}/howtos/${howto.slug}`}
+                          title={howto.title}
+                          description={howto.description}
+                          alt={howto.title}
+                          category={howto.category?.label}
+                          difficulty_level={howto.difficulty_level}
+                          time={howto.time}
+                          total_views={howto.total_views}
+                          total_downloads={howto.total_downloads}
+                          author={howto._createdBy}
+                          tags={
+                            howto.tags?.map((tag) =>
+                              typeof tag === "string" ? tag : tag.label,
+                            ) || []
+                          }
+                          locale={locale}
+                          howto={howto}
+                        />
+                      ) : null;
+                    })}
+                  </div>
+
+                  {groups[category].length > 8 && (
+                    <div class="mt-6 text-center">
+                      <a
+                        href={`/${locale}/howto-category/${category.toLowerCase().replace(/\s+/g, "-")}`}
+                        class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
+                      >
+                        <Translate>View all</Translate>{" "}
+                        {groups[category].length}{" "}
+                        <Translate>guides in</Translate> {category}
+                        <svg
+                          class="w-4 h-4 ml-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </a>
+                    </div>
+                  )}
+                </section>
+              ))
+            }
+          </div>
+
+          <!-- Back to top -->
+          <div class="mt-12 text-center">
+            <a
+              href="#top"
+              class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+              </svg>
+              <Translate>Back to top</Translate>
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

@@ -1,0 +1,478 @@
+---
+import path from "path";
+import { decode } from "html-entities";
+import { sync as exists } from "@polymech/fs/exists";
+import { sync as read } from "@polymech/fs/read";
+import type { MarkdownHeading } from "astro";
+
+import { IHowto, IStep, asset_local_rel } from "@/model/howto/howto.js";
+import { translate } from "@polymech/astro-base/base/i18n.js";
+import Translate from "@polymech/astro-base/components/i18n.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Sidebar from "@polymech/astro-base/components/sidebar/Sidebar.astro";
+import MobileToggle from "@polymech/astro-base/components/sidebar/MobileToggle.astro";
+import Breadcrumb from "@polymech/astro-base/components/Breadcrumb.astro";
+import { getSidebarConfig } from "@polymech/astro-base/config/sidebar";
+import Wrapper from "@polymech/astro-base/components/containers/Wrapper.astro";
+
+import GalleryK from "@polymech/astro-base/components/GalleryK.astro";
+import { files, forward_slash } from "@polymech/commons";
+import pMap from "p-map";
+import { createHTMLComponent, createMarkdownComponent } from "@/base/index.js";
+
+import { applyFilters, shortenUrl } from "@/base/filters.js";
+// import { extract, extract_learned_skills, references } from "@/base/kbot.js";
+import {
+  HOWTO_FILES_WEB,
+  HOWTO_FILES_ABS,
+  HOWTO_COMPLETE_SKILLS,
+  HOWTO_LOCAL_RESOURCES,
+  I18N_SOURCE_LANGUAGE,
+} from "../../app/config.js";
+
+import { filter } from "@/base/kbot.js";
+import { getCollection } from "astro:content";
+import { group_by_cat } from "@/model/howto/howto.js";
+import { getHowtoNavigation } from "@/model/howto/navigation.js";
+
+interface Props {
+  howto: IHowto;
+}
+const { frontmatter: howto } = Astro.props;
+const howto_abs = HOWTO_FILES_ABS(howto.slug);
+const sidebarConfig = getSidebarConfig();
+
+let model_files: any = [...files(howto_abs, "**/**/*.(step|stp)")];
+model_files = model_files.map((f) =>
+  forward_slash(`${howto.slug}/${path.relative(path.resolve(howto_abs), f)}`),
+);
+
+const content = async (str: string) =>
+  await translate(str, I18N_SOURCE_LANGUAGE, Astro.currentLocale);
+
+const component = async (str: string) =>
+  await createMarkdownComponent(await content(str));
+
+const componentHTML = async (str: string) =>
+  await createHTMLComponent(await content(str));
+
+const stepsWithFilteredMarkdown = await pMap(
+  howto.steps || [],
+  async (step: IStep) => ({
+    ...step,
+    filteredMarkdownComponent: await component(step.text),
+  }),
+  { concurrency: 1 },
+);
+
+// Fetch all howtos for category navigation
+const allHowtos = await getCollection("howtos");
+
+const pageNavigation = getHowtoNavigation(
+  allHowtos,
+  howto.slug,
+  undefined,
+  Astro.currentLocale,
+);
+
+// Function to extract headings from markdown content
+const extractHeadingsFromMarkdown = (markdown: string): MarkdownHeading[] => {
+  if (!markdown) return [];
+
+  const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+  const headings: MarkdownHeading[] = [];
+  let match;
+
+  while ((match = headingRegex.exec(markdown)) !== null) {
+    const depth = match[1].length as 1 | 2 | 3 | 4 | 5 | 6;
+    const text = match[2].trim();
+    const slug = text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "") // Remove special characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .trim();
+
+    headings.push({ depth, slug, text });
+  }
+
+  return headings;
+};
+
+const Description = component(howto.description);
+const authorGeo = howto?.user?.geo || {
+  countryName: "Unknown",
+  data: { urls: [] },
+};
+
+const authorLinks = (howto?.user?.data.urls || []).filter(
+  (l) => !l.url.includes("one_army") && !l.url.includes("bazar"),
+);
+//////////////////////////////////////////////////////////////
+//
+//  Resources
+//
+//////////////////////////////////////////////////////////////
+const howto_resources_default = `# Resources`;
+const howto_resources_path = path.join(howto_abs, "resources.md");
+
+let howto_resources = exists(howto_resources_path)
+  ? read(howto_resources_path, "string") || howto_resources_default
+  : howto_resources_default;
+
+const howto_references_default = `# References`;
+const howto_references_path = path.join(howto_abs, "references.md");
+let howto_references = exists(howto_resources_path)
+  ? read(howto_references_path, "string") || howto_references_default
+  : howto_references_default;
+
+const contentAll = `${howto.content}`;
+
+if (HOWTO_COMPLETE_SKILLS) {
+  const references_extra = await filter(contentAll, "learned_skills");
+  howto_resources = `${howto_resources}\n\n ${references_extra}`;
+}
+if (HOWTO_LOCAL_RESOURCES && howto.user && howto.user.geo) {
+  const references_extra = await filter(
+    `Location: ${authorGeo.countryName}`,
+    "local",
+  );
+  howto_resources = `${howto_resources}\n\n ${references_extra}`;
+}
+
+const Resources = component(howto_resources);
+const References = component(howto_references);
+
+// Generate headings for sidebar TOC dynamically (after all content is initialized)
+const dynamicHeadings: MarkdownHeading[] = [];
+
+// Main title
+dynamicHeadings.push({
+  depth: 1,
+  slug: "title",
+  text: howto.title,
+});
+
+// Extract headings from description if it contains markdown headings
+if (howto.description) {
+  const descriptionHeadings = extractHeadingsFromMarkdown(howto.description);
+  if (descriptionHeadings.length === 0) {
+    // No headings in description, add it as a section
+    dynamicHeadings.push({
+      depth: 2,
+      slug: "description",
+      text: "Description",
+    });
+  } else {
+    // Add description headings
+    dynamicHeadings.push(
+      ...descriptionHeadings.map((h) => ({
+        ...h,
+        depth: Math.max(2, h.depth) as any,
+      })),
+    );
+  }
+}
+
+// Add steps section if we have steps
+if (stepsWithFilteredMarkdown.length > 0) {
+  // Steps section header
+  dynamicHeadings.push({
+    depth: 2,
+    slug: "steps",
+    text: "Steps",
+  });
+
+  // Individual steps with extracted headings from their content
+  stepsWithFilteredMarkdown.forEach((step, idx) => {
+    // Add the step title
+    dynamicHeadings.push({
+      depth: 3,
+      slug: `step-${idx + 1}`,
+      text: `Step ${idx + 1}: ${step.title}`,
+    });
+
+    // Extract any headings from the step content
+    const stepHeadings = extractHeadingsFromMarkdown(step.text);
+    stepHeadings.forEach((heading) => {
+      dynamicHeadings.push({
+        ...heading,
+        depth: Math.max(4, heading.depth) as any, // Make sure step content headings are at least depth 4
+        slug: `step-${idx + 1}-${heading.slug}`,
+      });
+    });
+  });
+}
+
+// Add resources section (check if resources content has headings)
+const resourcesHeadings = extractHeadingsFromMarkdown(howto_resources);
+if (resourcesHeadings.length === 0) {
+  dynamicHeadings.push({
+    depth: 2,
+    slug: "resources",
+    text: "Resources",
+  });
+} else {
+  dynamicHeadings.push(
+    ...resourcesHeadings.map((h) => ({
+      ...h,
+      depth: Math.max(2, h.depth) as any,
+    })),
+  );
+}
+
+// Add references section (check if references content has headings)
+const referencesHeadings = extractHeadingsFromMarkdown(howto_references);
+if (referencesHeadings.length === 0) {
+  dynamicHeadings.push({
+    depth: 2,
+    slug: "references",
+    text: "References",
+  });
+} else {
+  dynamicHeadings.push(
+    ...referencesHeadings.map((h) => ({
+      ...h,
+      depth: Math.max(2, h.depth) as any,
+    })),
+  );
+}
+
+// Add metadata section
+dynamicHeadings.push({
+  depth: 2,
+  slug: "metadata",
+  text: "Metadata",
+});
+
+const headings = dynamicHeadings;
+
+/*
+const EditLink = () => {
+  return (
+    <a href={HOWTO_EDIT_URL(howto.slug, Astro.currentLocale)}>Edit</a>
+  )
+}
+*/
+---
+
+<BaseLayout class="markdown-content bg-gray-100" frontmatter={howto}>
+  <div class="layout-with-sidebar">
+    <!-- Mobile Toggle -->
+    <MobileToggle />
+
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper">
+      <Sidebar
+        config={sidebarConfig}
+        currentUrl={Astro.url}
+        headings={headings}
+        pageNavigation={pageNavigation}
+      />
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content-with-sidebar">
+      <div class="px-4 py-4 md:px-6 md:py-6">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          currentPath={Astro.url.pathname}
+          collection="howtos"
+          title={howto.title}
+        />
+
+        <Wrapper>
+          <article class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <header class="p-4">
+              <h1 id="title" class="text-4xl font-bold text-gray-800 mb-4">
+                <Translate>{howto.title}</Translate>
+              </h1>
+              <GalleryK images={[{ src: howto.cover_image.src, alt: "" }]} />
+              <div class="flex flex-wrap gap-2 mb-4">
+                {
+                  howto.tags.map((tag) => (
+                    <span class="bg-orange-400 text-white text-xs px-3 py-1 rounded-full">
+                      <Translate>{tag.toUpperCase()}</Translate>
+                    </span>
+                  ))
+                }
+              </div>
+            </header>
+          </article>
+
+          <section class="meta-view bg-white rounded-lg p-4 mt-4 truncate">
+            <ul class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-8 mb-8">
+              <li>
+                <strong><Translate>Difficulty:</Translate></strong>
+                <Translate>{howto.difficulty_level}</Translate>
+              </li>
+              <li>
+                <strong><Translate>Time Required:</Translate></strong>
+                <Translate>{decode(howto.time)}</Translate>
+              </li>
+              <li>
+                <strong><Translate>Views:</Translate></strong>{
+                  howto.total_views
+                }
+              </li>
+              <li>
+                <strong><Translate>Creator:</Translate></strong>{
+                  howto._createdBy
+                }
+              </li>
+              <li>
+                <strong><Translate>Country:</Translate></strong>{
+                  authorGeo.countryName
+                }
+              </li>
+              <li>
+                <strong><Translate>Email:</Translate></strong>
+                <a
+                  class="text-orange-600 underline"
+                  href={`mailto:${authorLinks.find((link) => link.name.toLowerCase() === "email")?.url.replace("mailto:", "")}`}
+                >
+                  {
+                    authorLinks
+                      .find((link) => link.name.toLowerCase() === "email")
+                      ?.url.replace("mailto:", "")
+                  }
+                </a>
+              </li>
+              {
+                authorLinks
+                  .filter((l) => l.name.toLowerCase() !== "email")
+                  .map((link) => (
+                    <li>
+                      <strong>{link.name}:</strong>
+                      <a
+                        class="text-orange-600 underline"
+                        href={link.url}
+                        target="_blank"
+                      >
+                        {shortenUrl(link.url)}
+                      </a>
+                    </li>
+                  ))
+              }
+              <li>
+                <strong><Translate>Downloads:</Translate></strong>{
+                  howto.total_downloads
+                }
+              </li>
+            </ul>
+          </section>
+
+          <section id="description" class="bg-white p-8">
+            <div class="mb-8 markdown-content">
+              <Description />
+            </div>
+            <a
+              href={HOWTO_FILES_WEB(howto.slug)}
+              class="inline-block py-2 px-4 bg-orange-500 hover:bg-orange-700 text-white rounded-full mb-8"
+              ><Translate>Browse Files</Translate></a
+            >
+          </section>
+
+          <section id="table-of-contents" class="px-8 py-8 bg-orange-50">
+            <h2 class="font-bold mb-4 text-xl">
+              <Translate>Table of Contents</Translate>
+            </h2>
+            {
+              stepsWithFilteredMarkdown &&
+              stepsWithFilteredMarkdown.length > 0 ? (
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 list-decimal p-4">
+                  {stepsWithFilteredMarkdown.map((step, idx) => (
+                    <li>
+                      <a
+                        href={`#step-${idx + 1}`}
+                        class="text-orange-600 hover:underline"
+                      >
+                        <Translate>{step.title}</Translate>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div class="p-4 text-gray-600">
+                  <p>No steps available for this how-to guide.</p>
+                  <p>
+                    Debug: Steps length ={" "}
+                    {stepsWithFilteredMarkdown?.length || 0}
+                  </p>
+                </div>
+              )
+            }
+          </section>
+
+          <section id="steps" class="border-gray-300 p-0 lg:p-6 mt-8">
+            {
+              stepsWithFilteredMarkdown &&
+              stepsWithFilteredMarkdown.length > 0 ? (
+                <ol class="space-y-10">
+                  {stepsWithFilteredMarkdown.map((step, idx) => (
+                    <li
+                      id={`step-${idx + 1}`}
+                      class="bg-white shadow-sm rounded-lg p-2 lg:p-6"
+                    >
+                      <div class="mb-4 flex items-center">
+                        <span class="bg-orange-500 text-xl font-bold text-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                          {idx + 1}
+                        </span>
+                        <h3 class="text-xl font-bold">
+                          <a
+                            href={`#step-${idx + 1}`}
+                            class="text-orange-600 hover:underline"
+                          >
+                            <Translate>{step.title}</Translate>
+                          </a>
+                        </h3>
+                      </div>
+                      <div class="markdown-content">
+                        <step.filteredMarkdownComponent />
+                      </div>
+                      {step.images?.length > 0 && (
+                        <GalleryK images={step.images} />
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <div class="p-8 text-center text-gray-600">
+                  <p>No detailed steps are available for this how-to guide.</p>
+                </div>
+              )
+            }
+          </section>
+
+          <section
+            id="resources"
+            class="bg-white shadow-lg rounded-lg border-gray-300 p-4 lg:p-6 mt-8 markdown-content"
+          >
+            <Resources />
+          </section>
+          <section
+            id="references"
+            class="bg-white shadow-lg rounded-lg border-gray-300 p-4 lg:p-6 mt-8 markdown-content"
+          >
+            <References />
+          </section>
+          <footer
+            id="metadata"
+            class="p-8 text-sm border-t bg-white text-gray-600"
+          >
+            <div class="flex justify-between">
+              <span
+                ><Translate>Created on</Translate>: {
+                  new Date(howto._created).toLocaleDateString()
+                }</span
+              >
+              <span
+                >{howto.votedUsefulBy.length}
+                <Translate>people found this useful</Translate></span
+              >
+            </div>
+          </footer>
+        </Wrapper>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

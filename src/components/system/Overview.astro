@@ -1,0 +1,133 @@
+---
+// Define the data for each section and its pages
+const pages = [
+  {
+    title: "Overview",
+    categories: [
+      {
+        name: "Store",
+        links: [
+          { href: "/", text: "Home" },
+          { href: "/store/home", text: "Home two" },
+          { href: "/store/home-three", text: "Home three" },
+          { href: "/404", text: "Error 404" },
+        ],
+      },
+      {
+        name: "Pricing",
+        links: [{ href: "/pricing/pricing-full", text: "Table" }],
+      },
+      {
+        name: "Forms",
+        links: [{ href: "/forms/contact2", text: "Contact" }],
+      },
+      {
+        name: "System",
+        links: [
+          { href: "/system/styleguide", text: "Style Guide" },
+          {
+            href: "https://lexingtonthemes.com/legal/license",
+            text: "License",
+          },
+          {
+            href: "https://lexingtonthemes.com/legal/support/",
+            text: "Support",
+          },
+          {
+            href: "https://lexingtonthemes.com/documentation/quick-start",
+            text: "Documentation",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Content collections",
+    categories: [
+      {
+        name: "Blog",
+        links: [
+       
+        ],
+      },
+      {
+        name: "Store",
+        links: [
+          { href: "/store/1", text: "Product Details" },
+          { href: "/store/checkout", text: "Checkout" },
+        ],
+      },
+      {
+        name: "Help center",
+        links: [
+          { href: "/helpcenter/home", text: "Home" },
+          { href: "/helpcenter/1", text: "Details" },
+        ],
+      },
+      {
+        name: "Utility pages",
+        links: [
+          { href: "/infopages/dpa", text: "DPA" },
+          { href: "/infopages/about", text: "About " },
+          { href: "/infopages/terms", text: "Terms" },
+          { href: "/infopages/privacy", text: "Privacy" },
+          { href: "/infopages/cookies", text: "Cookies" },
+        ],
+      },
+    ],
+  },
+];
+---
+
+<section>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2">
+    <div class="flex flex-col gap-12 h-full justify-between p-4">
+      <div>
+        <h1
+          class="text-lg text-neutral-600 font-mono tracking-tight text-balance">
+          Overview
+        </h1>
+        <p class="text-sm text-balance text-neutral-500">
+          Preview all pages on Williamsburg
+        </p>
+      </div>
+    </div>
+    <div class="bg-white items-center rounded-xl col-span-2 p-4">
+      <div class="grid items-end gap-4 lg:grid-cols-3">
+        <div class="space-y-24 col-span-full">
+          {
+            pages.map((section) => (
+              <div>
+                <p class="text-base text-neutral-600 font-mono tracking-tight text-balance">
+                  {section.title}
+                </p>
+                <div class="mt-6 gap-y-12 gap-x-6 grid md:grid-cols-3 xl:grid-cols-3 ">
+                  {section.categories.map((category) => (
+                    <div class="flex flex-col gap-4 ">
+                      <p class="text-sm text-neutral-600 font-mono tracking-tight text-balance">
+                        {category.name}
+                      </p>
+                      <ul
+                        role="list"
+                        class="text-xs space-y-1 text-neutral-500 font-mono uppercase">
+                        {category.links.map((link) => (
+                          <li>
+                            <a
+                              href={link.href}
+                              class=" hover:text-orange-500 ">
+                              {link.text}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

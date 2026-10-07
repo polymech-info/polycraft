@@ -1,0 +1,98 @@
+{
+    "templates": {
+        "simple": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion"
+        },
+        "keywords": {
+            "_router": "openai",
+            "model": "google/gemini-exp-1206:free",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Return a list of max. 10 keywords that can be used for SEO purposes, separated by commas (dont comment, just the list) : "
+        },
+        "references": {
+            "_router": "openai",
+            "model": "google/gemini-exp-1206:free",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Return a list of useful references (only with links), as Markdown, grouped : Articles, Books, Papers, Youtube, Opensource Designs, ... Dont comment !",
+            "filters": "code"
+        },
+        "codeSimple": {
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion"
+        },
+        "research": {
+            "router": "openai",
+            "model": "gpt-4.5-preview",
+            "preferences": "none",
+            "mode": "completion"
+        },
+        "toolsAndHardware": {
+            "router_": "openai",
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Extract the required tools, software hardware from the following tutorial.Return as Markdown chapters (H3) with very short bullet points (not bold), with links, max. 5.",
+            "filters": "code"
+        },
+        "requiredSkills": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Analyze the following tutorial and identify all the skills that a person would need in order to complete the project. Return as JSON with this structure:\n\n{\n  \"skills\": [\n    {\n      \"name\": \"Skill name\", \n      \"level\": \"Beginner, Intermediate, or Advanced\", \n      \"description\": \"Brief description of where/how this skill is needed\"\n    }\n  ],\n  \"prerequisiteKnowledge\": [\n    \"Background knowledge or familiarity with concepts\"\n  ],\n  \"safetyConsiderations\": [\n    \"Any safety considerations or precautions needed\"\n  ]\n}\n\nReturn only the JSON. No introductions or explanations.",
+            "filters": "code"
+        },
+        "learnedSkills": {
+            "router": "openai",
+            "model": "gpt-4o",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Analyze the following tutorial and identify all the skills that a person would learn or improve by completing this project, modest, humble, simple - dont enflate (sustainable, recylcing, ...), Return as Markdown chapter (H2) with very short bullet points (not bold), max. 5.",
+            "filters": "code"
+        },
+        "local": {
+            "model": "perplexity/sonar-deep-research",
+            "preferences": "none",
+            "mode": "completion",
+            "prompt": "Markdown chapter (h4) with a list of local resources, services & suppliers, max. 5, with links,group by category. dont comment, just the list",
+            "filters": "code"
+        }
+    },
+    "instructions": {
+        "tone": [
+            { "flag": "formal", "text": "use a formal tone" },
+            { "flag": "friendly", "text": "be friendly and approachable" }
+        ],
+        "content": [
+            { "flag": "spellCheck", "text": "spell check the text, fix any errors" },
+            { "flag": "removeEmojis", "text": "remove emojis" },
+            { "flag": "removePersonalPrefs", "text": "remove personal preferences or biases" },
+            { "flag": "removeRedundancy", "text": "remove redundancy, eg: we attached the files" },
+            { "flag": "shorten", "text": "shorten text if possible but preserve personality" }
+        ],
+        "moderation": [
+            { "flag": "mafiaFilter", "text": "remove references to preciousplastic, bazar and Discord" },
+            { "flag": "deprogramming", "text": "remove any brain/green washing, eg: sustainable, circular, recycling ... inflated prospects" }
+        ],
+        "context": [
+            { "flag": "makerTutorials", "text": "Context: howto tutorials, for makers" },
+            { "flag": "units", "text": "Convert units, from metric to imperial and vice versa (in braces)" }
+        ],
+        "format": [
+            { "flag": "markdown", "text": "dont comment just return as Markdown" }
+        ]
+    },
+    "defaults": {
+        "tone": ["formal"],
+        "content": ["spellCheck", "removeEmojis", "removePersonalPrefs", "shorten"],
+        "moderation": ["mafiaFilter", "deprogramming"],
+        "context": ["makerTutorials", "units"],
+        "format": ["markdown"]
+    }
+} 

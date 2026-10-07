@@ -1,0 +1,8 @@
+---
+const { canonical, hreflangs } = Astro.props
+---
+{canonical && <link rel="canonical" href={canonical} />}
+{hreflangs &&
+  hreflangs.map((entry) => (
+    <link key={entry.lang} rel="alternate" hreflang={entry.lang} href={entry.url} />
+  ))}

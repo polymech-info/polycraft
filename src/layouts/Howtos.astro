@@ -1,0 +1,204 @@
+---
+import BaseLayout from "./BaseLayout.astro"
+import Sidebar from "@polymech/astro-base/components/sidebar/Sidebar.astro"
+import MobileToggle from "@polymech/astro-base/components/sidebar/MobileToggle.astro"
+import Breadcrumb from "@polymech/astro-base/components/Breadcrumb.astro";
+import { getSidebarConfig } from '@polymech/astro-base/config/sidebar';
+import RelativeImage from '@polymech/astro-base/components/RelativeImage.astro';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description?: string;
+    author?: string;
+    pubDate?: Date;
+    tags?: string[];
+    category?: string;
+    difficulty_level?: string;
+    time?: string;
+    image?: {
+      url: string;
+      alt: string;
+    };
+    sidebar?: any; // Page-level sidebar configuration
+    breadcrumb?: boolean; // Enable/disable breadcrumb (default: true)
+  };
+  headings?: MarkdownHeading[];
+  entryPath?: string;
+}
+
+const { frontmatter, headings = [], entryPath } = Astro.props;
+const sidebarConfig = getSidebarConfig();
+
+// Extract page-level sidebar configuration from frontmatter
+const pageNavigation = frontmatter.sidebar ? [frontmatter.sidebar].flat() : [];
+
+// Format the date
+const formattedDate = frontmatter.pubDate ? new Date(frontmatter.pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}) : '';
+---
+
+<BaseLayout frontmatter={frontmatter}>
+  <div class="layout-with-sidebar">
+    <!-- Mobile Toggle -->
+    <MobileToggle />
+    
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper">
+      <Sidebar 
+        config={sidebarConfig} 
+        currentUrl={Astro.url} 
+        headings={headings} 
+        pageNavigation={pageNavigation}
+      />
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content-with-sidebar">
+      <div class="px-4 py-4 md:px-6 md:py-6">
+        {/* Breadcrumb - enabled by default, can be disabled with breadcrumb: false */}
+        {frontmatter.breadcrumb !== false && (
+          <Breadcrumb 
+            currentPath={Astro.url.pathname} 
+            collection="howtos" 
+            title={frontmatter.title}
+          />
+        )}
+        
+        <article class="prose prose-lg max-w-full md:max-w-4xl mx-auto overflow-x-hidden">
+          <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+              {frontmatter.title}
+            </h1>
+            
+            {/* Metadata row */}
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
+              {frontmatter.category && (
+                <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full">
+                  {frontmatter.category}
+                </span>
+              )}
+              {frontmatter.difficulty_level && (
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
+                  {frontmatter.difficulty_level}
+                </span>
+              )}
+              {frontmatter.time && (
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">
+                  {frontmatter.time}
+                </span>
+              )}
+              {frontmatter.author && frontmatter.author.toLowerCase() !== 'unknown' && (
+                <span>By {frontmatter.author}</span>
+              )}
+              {formattedDate && <span>{formattedDate}</span>}
+            </div>
+            
+            <p class="text-xl text-gray-700 mb-6">{frontmatter.description}</p>
+            
+            {frontmatter.tags && frontmatter.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2 mb-6">
+                {frontmatter.tags.map((tag: string) => (
+                  <span class="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </header>
+          
+          {frontmatter.image?.url && (
+            <RelativeImage
+              src={frontmatter.image.url}
+              alt={frontmatter.image.alt || frontmatter.title}
+              width={1200}
+              height={510}
+              sizes="(max-width: 800px) 100vw, 800px"
+              class="w-full h-auto rounded-lg mb-8"
+              entryPath={entryPath}
+            />
+          )}
+          
+          <div class="markdown-content">
+            <slot />
+          </div>
+        </article>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Global Lightbox -->
+  <div id="global-lightbox" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" style="display: none;">
+    <div class="relative max-w-full max-h-full">
+      <img id="lightbox-image" src="" alt="" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg" />
+
+      <!-- Close Button -->
+      <button id="lightbox-close" class="absolute -top-4 -right-4 text-white text-2xl p-2 bg-gray-800/75 rounded-full">&times;</button>
+
+      <!-- Navigation Buttons -->
+      <button id="lightbox-prev" class="absolute left-0 top-1/2 -translate-y-1/2 p-4 text-white text-3xl bg-gray-800/75 rounded-lg">&#10094;</button>
+      <button id="lightbox-next" class="absolute right-0 top-1/2 -translate-y-1/2 p-4 text-white text-3xl bg-gray-800/75 rounded-lg">&#10095;</button>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const lightbox = document.getElementById('global-lightbox') as HTMLElement;
+    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
+    const closeButton = document.getElementById('lightbox-close') as HTMLButtonElement;
+    const prevButton = document.getElementById('lightbox-prev') as HTMLButtonElement;
+    const nextButton = document.getElementById('lightbox-next') as HTMLButtonElement;
+
+    if (!lightbox || !lightboxImage || !closeButton || !prevButton || !nextButton) return;
+
+    let images: { src: string, alt: string }[] = [];
+    let currentIndex = 0;
+
+    function updateLightbox() {
+      if (images.length > 0 && images[currentIndex]) {
+        lightboxImage.src = images[currentIndex].src;
+        lightboxImage.alt = images[currentIndex].alt;
+        prevButton.style.display = currentIndex > 0 ? 'block' : 'none';
+        nextButton.style.display = currentIndex < images.length - 1 ? 'block' : 'none';
+      }
+    }
+
+    window.addEventListener('open-lightbox', (event: CustomEvent) => {
+      images = event.detail.images;
+      currentIndex = event.detail.currentIndex;
+      updateLightbox();
+      lightbox.style.display = 'flex';
+    });
+
+    closeButton.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+    });
+
+    prevButton.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateLightbox();
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      if (currentIndex < images.length - 1) {
+        currentIndex++;
+        updateLightbox();
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (lightbox.style.display === 'none') return;
+      if (event.key === 'Escape') closeButton.click();
+      if (event.key === 'ArrowLeft') prevButton.click();
+      if (event.key === 'ArrowRight') nextButton.click();
+    });
+  });
+</script>
+

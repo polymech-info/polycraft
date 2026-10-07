@@ -1,0 +1,468 @@
+---
+title: "Collection Filter System"
+description: "Complete guide to the generic collection filtering system for Astro content collections"
+author: "Polymech Team"
+pubDate: 2024-01-15
+tags: ["internal", "documentation", "astro", "collections", "filters"]
+---
+
+# Collection Filter System
+
+This document describes the generic collection filtering system implemented for Astro content collections. The system provides a unified way to filter collection entries across the application, ensuring consistency between pages and sidebar generation.
+
+## Overview
+
+The collection filter system replaces manual filtering in `getStaticPaths` functions with a configurable, reusable approach. It automatically excludes invalid entries like those with "Untitled" titles, draft content, folders, and other unwanted items.
+
+## Core Components
+
+### 1. Filter Functions (`polymech/src/base/collections.ts`)
+
+#### Basic Filters
+
+```typescript
+// Default filters applied automatically
+export const hasValidFrontMatter: CollectionFilter
+export const isNotFolder: CollectionFilter
+export const isNotDraft: CollectionFilter
+export const hasTitle: CollectionFilter // Excludes "Untitled" entries
+
+// Content validation filters
+export const hasBody: CollectionFilter
+export const hasDescription: CollectionFilter
+export const hasImage: CollectionFilter
+export const hasAuthor: CollectionFilter // Excludes "Unknown" authors
+export const hasPubDate: CollectionFilter
+export const hasTags: CollectionFilter
+export const hasValidFileExtension: CollectionFilter // .md/.mdx only
+```
+
+#### Advanced Filters
+
+```typescript
+// Date-based filtering
+export const isNotFuture: CollectionFilter
+export const createDateFilter(beforeDate?: Date, afterDate?: Date): CollectionFilter
+export const createOldPostFilter(cutoffDays: number): CollectionFilter
+
+// Tag-based filtering
+export const createTagFilter(requiredTags: string[], matchAll?: boolean): CollectionFilter
+export const createExcludeTagsFilter(excludeTags: string[]): CollectionFilter
+
+// Field validation
+export const createRequiredFieldsFilter(requiredFields: string[]): CollectionFilter
+export const createFrontmatterValidator(validator: (data: any) => boolean): CollectionFilter
+```
+
+### 2. Main Filter Functions
+
+```typescript
+// Apply filters to a collection
+export function filterCollection<T>(
+  collection: CollectionEntry<T>[],
+  filters: CollectionFilter<T>[] = defaultFilters,
+  astroConfig?: any
+): CollectionEntry<T>[]
+
+// Apply filters based on configuration
+export function filterCollectionWithConfig<T>(
+  collection: CollectionEntry<T>[],
+  config: CollectionFilterConfig,
+  astroConfig?: any
+): CollectionEntry<T>[]
+```
+
+### 3. Central Configuration (`site2/src/app/config.ts`)
+
+The collection filter system is centrally configured in `site2/src/app/config.ts`. This is the main configuration file where you control all filtering behavior across your application.
+
+**Key Configuration Location: `site2/src/app/config.ts`**
+
+```typescript
+/////////////////////////////////////////////
+//
+// Collection Filters
+
+// Collection filter configuration
+export const COLLECTION_FILTERS = {
+  // Core filters (enabled by default)
+  ENABLE_VALID_FRONTMATTER_CHECK: true,
+  ENABLE_FOLDER_FILTER: true,
+  ENABLE_DRAFT_FILTER: true,
+  ENABLE_TITLE_FILTER: true, // Filters out "Untitled" entries
+  
+  // Content validation filters (disabled by default)
+  ENABLE_BODY_FILTER: false, // Require entries to have body content
+  ENABLE_DESCRIPTION_FILTER: false, // Require entries to have descriptions
+  ENABLE_IMAGE_FILTER: false, // Require entries to have images
+  ENABLE_AUTHOR_FILTER: false, // Require entries to have real authors (not "Unknown")
+  ENABLE_PUBDATE_FILTER: false, // Require entries to have valid publication dates
+  ENABLE_TAGS_FILTER: false, // Require entries to have tags
+  ENABLE_FILE_EXTENSION_FILTER: true, // Require valid .md/.mdx extensions
+  
+  // Advanced filtering
+  REQUIRED_FIELDS: [], // Array of required frontmatter fields
+  REQUIRED_TAGS: [], // Array of required tags
+  EXCLUDE_TAGS: [], // Array of tags to exclude
+  
+  // Date filtering
+  FILTER_FUTURE_POSTS: false, // Filter out posts with future publication dates
+  FILTER_OLD_POSTS: false, // Filter out posts older than a certain date
+  OLD_POST_CUTOFF_DAYS: 365, // Days to consider a post "old"
+}
+```
+
+**Why config.ts?**
+- **Centralized Control**: All filter settings in one place
+- **Environment Consistency**: Same filtering rules across all pages and sidebar
+- **Easy Maintenance**: Change behavior without touching individual page files
+- **Type Safety**: Imported with full TypeScript support
+
+## Configuring Filters in config.ts
+
+### Modifying Collection Filters
+
+To change filtering behavior across your entire application, edit the `COLLECTION_FILTERS` object in `site2/src/app/config.ts`:
+
+```typescript
+// site2/src/app/config.ts
+
+// Example: Enable stricter content validation
+export const COLLECTION_FILTERS = {
+  // Core filters (keep these enabled)
+  ENABLE_VALID_FRONTMATTER_CHECK: true,
+  ENABLE_FOLDER_FILTER: true,
+  ENABLE_DRAFT_FILTER: true,
+  ENABLE_TITLE_FILTER: true,
+  
+  // Enable content validation
+  ENABLE_BODY_FILTER: true,        // Require body content
+  ENABLE_DESCRIPTION_FILTER: true, // Require descriptions
+  ENABLE_AUTHOR_FILTER: true,      // Require real authors
+  ENABLE_TAGS_FILTER: true,        // Require tags
+  
+  // Require specific fields
+  REQUIRED_FIELDS: ['title', 'description', 'pubDate'],
+  
+  // Exclude test content
+  EXCLUDE_TAGS: ['draft', 'test', 'internal'],
+  
+  // Filter future posts in production
+  FILTER_FUTURE_POSTS: true,
+}
+```
+
+### Configuration Import
+
+The configuration is imported in pages and components like this:
+
+```typescript
+import { COLLECTION_FILTERS } from "config/config.js"
+import { filterCollectionWithConfig } from '@polymech/astro-base/base/collections';
+
+// Apply the configured filters
+const entries = filterCollectionWithConfig(allEntries, COLLECTION_FILTERS);
+```
+
+**Note**: The import path `"config/config.js"` refers to `site2/src/app/config.ts` due to Astro's import resolution.
+
+## Usage Examples
+
+### 1. Basic Usage in Pages
+
+Replace manual filtering in `getStaticPaths`:
+
+```typescript
+// Before
+export async function getStaticPaths() {
+  const resourceEntries = (await getCollection("resources")).filter(entry => {
+    const entryPath = `src/content/resources/${entry.id}`;
+    return !isFolder(entryPath);
+  });
+}
+
+// After
+import { filterCollectionWithConfig } from '@polymech/astro-base/base/collections';
+import { COLLECTION_FILTERS } from 'config/config.js';
+
+export async function getStaticPaths() {
+  const allResourceEntries = await getCollection("resources");
+  const resourceEntries = filterCollectionWithConfig(allResourceEntries, COLLECTION_FILTERS);
+}
+```
+
+### 2. Custom Filtering
+
+```typescript
+import { filterCollection, hasTitle, isNotDraft, createTagFilter } from '@polymech/astro-base/base/collections';
+
+// Custom filter combination
+const customFilters = [
+  hasTitle,
+  isNotDraft,
+  createTagFilter(['published'], true), // Must have 'published' tag
+];
+
+const filteredEntries = filterCollection(allEntries, customFilters);
+```
+
+### 3. Configuration-Based Filtering
+
+```typescript
+// Enable stricter content validation
+const strictConfig = {
+  ...COLLECTION_FILTERS,
+  ENABLE_DESCRIPTION_FILTER: true,
+  ENABLE_AUTHOR_FILTER: true,
+  ENABLE_TAGS_FILTER: true,
+  REQUIRED_FIELDS: ['title', 'description', 'pubDate'],
+  EXCLUDE_TAGS: ['draft', 'internal', 'test']
+};
+
+const entries = filterCollectionWithConfig(allEntries, strictConfig);
+```
+
+### 4. Sidebar Integration
+
+The sidebar automatically uses the filter system:
+
+```typescript
+// Sidebar configuration in polymech/src/config/sidebar.ts
+export const sidebarConfig: SidebarGroup[] = [
+  {
+    label: 'Resources',
+    autogenerate: { 
+      directory: 'resources',
+      collapsed: true,
+      sortBy: 'alphabetical'
+    },
+  }
+];
+```
+
+#### Advanced Sidebar Options
+
+```typescript
+import { generateLinksFromDirectoryWithConfig, createSidebarOptions } from '@polymech/astro-base/components/sidebar/utils';
+
+// Using the new options object API
+const links = await generateLinksFromDirectoryWithConfig('resources', {
+  maxDepth: 3,
+  collapsedByDefault: true,
+  sortBy: 'date',
+  filters: [hasTitle, isNotDraft, hasDescription]
+});
+
+// Using the helper function
+const options = createSidebarOptions({
+  maxDepth: 4,
+  sortBy: 'custom',
+  customSort: (a, b) => a.label.localeCompare(b.label),
+  filters: customFilters
+});
+
+const links = await generateLinksFromDirectoryWithConfig('resources', options);
+```
+
+## Filter Details
+
+### Default Filters
+
+These filters are applied automatically unless disabled:
+
+1. **`hasValidFrontMatter`** - Ensures entries have valid frontmatter data
+2. **`isNotFolder`** - Excludes directory entries using `entry.filePath`
+3. **`isNotDraft`** - Excludes entries with `draft: true`
+4. **`hasTitle`** - Excludes entries with empty titles or "Untitled"
+
+### Content Validation Filters
+
+Enable these for stricter content requirements:
+
+- **`hasBody`** - Requires non-empty body content
+- **`hasDescription`** - Requires non-empty descriptions
+- **`hasImage`** - Requires `image.url` in frontmatter
+- **`hasAuthor`** - Requires real authors (not "Unknown")
+- **`hasPubDate`** - Requires valid publication dates
+- **`hasTags`** - Requires non-empty tags array
+- **`hasValidFileExtension`** - Ensures `.md` or `.mdx` extensions
+
+### Advanced Filtering
+
+#### Date Filtering
+
+```typescript
+// Filter future posts
+FILTER_FUTURE_POSTS: true
+
+// Filter old posts
+FILTER_OLD_POSTS: true,
+OLD_POST_CUTOFF_DAYS: 365
+
+// Custom date ranges
+const recentFilter = createDateFilter(
+  new Date('2024-12-31'), // Before this date
+  new Date('2024-01-01')  // After this date
+);
+```
+
+#### Tag Filtering
+
+```typescript
+// Require specific tags (all must be present)
+REQUIRED_TAGS: ['published', 'reviewed']
+
+// Exclude specific tags
+EXCLUDE_TAGS: ['draft', 'internal', 'test']
+
+// Custom tag filtering
+const tutorialFilter = createTagFilter(['tutorial', 'guide'], false); // At least one
+const excludeTestFilter = createExcludeTagsFilter(['test', 'draft']);
+```
+
+#### Field Validation
+
+```typescript
+// Require specific frontmatter fields
+REQUIRED_FIELDS: ['title', 'description', 'pubDate', 'author']
+
+// Custom field validation
+const customValidator = createFrontmatterValidator((data) => {
+  return data.title && 
+         data.description && 
+         data.description.length > 50 && // Min description length
+         Array.isArray(data.tags) && 
+         data.tags.length > 0;
+});
+```
+
+## Frontmatter Validation
+
+The system includes advanced frontmatter validation using Astro's `parseFrontmatter`:
+
+```typescript
+import { parseFrontmatter } from '@astrojs/markdown-remark';
+
+// Advanced validation for raw markdown content
+const rawValidator = createRawFrontmatterValidator(
+  (entry) => fs.readFileSync(entry.filePath, 'utf-8'),
+  (frontmatter) => frontmatter.published === true
+);
+
+// File-based validation using entry.filePath
+const fileValidator = createFileBasedFrontmatterValidator(
+  (data) => data.status === 'published'
+);
+```
+
+## Error Handling
+
+The filter system includes comprehensive error handling:
+
+```typescript
+// Individual filter errors are logged but don't break the entire filtering
+try {
+  return filter(entry, astroConfig);
+} catch (error) {
+  console.warn(`Filter failed for entry ${entry.id}:`, error);
+  return false; // Exclude entry on filter error
+}
+```
+
+## Performance Considerations
+
+- **Caching**: Collection entries are cached by Astro in production
+- **Early Filtering**: Apply filters as early as possible in `getStaticPaths`
+- **Filter Order**: More selective filters should come first
+- **Lazy Evaluation**: Filters use short-circuit evaluation
+
+## Migration Guide
+
+### From Manual Filtering
+
+```typescript
+// Old approach
+const entries = (await getCollection("resources")).filter(entry => {
+  const entryPath = `src/content/resources/${entry.id}`;
+  return !isFolder(entryPath) && !entry.data?.draft && entry.data?.title !== 'Untitled';
+});
+
+// New approach
+const entries = filterCollectionWithConfig(
+  await getCollection("resources"), 
+  COLLECTION_FILTERS
+);
+```
+
+### Sidebar Updates
+
+The sidebar automatically uses the new filter system. No migration needed for basic usage.
+
+## Best Practices
+
+1. **Use Configuration**: Prefer `COLLECTION_FILTERS` over custom filter arrays
+2. **Test Thoroughly**: Verify filtering works across all content types
+3. **Document Custom Filters**: Add JSDoc comments to custom filter functions
+4. **Handle Errors**: Always wrap filter logic in try-catch blocks
+5. **Performance**: Use selective filters first to reduce processing
+
+## Troubleshooting
+
+### Common Issues
+
+**Entries Still Showing in Sidebar**
+- Ensure sidebar is using the updated `generateLinksFromDirectoryWithConfig`
+- Check that filters are properly imported and configured
+
+**Filter Not Working**
+- Verify the filter function returns a boolean
+- Check that the entry structure matches expected format
+- Look for console warnings about filter failures
+
+**Type Errors**
+- Ensure proper imports from `@polymech/astro-base/base/collections`
+- Check that custom filters match the `CollectionFilter<T>` type
+
+### Debugging
+
+Enable debug logging by adding console logs to custom filters:
+
+```typescript
+const debugFilter: CollectionFilter = (entry) => {
+  const result = hasTitle(entry);
+  console.log(`Filter result for ${entry.id}:`, result, entry.data?.title);
+  return result;
+};
+```
+
+## API Reference
+
+### Types
+
+```typescript
+export type CollectionFilter<T = any> = (entry: CollectionEntry<T>, astroConfig?: any) => boolean;
+
+export interface CollectionFilterConfig {
+  ENABLE_VALID_FRONTMATTER_CHECK?: boolean;
+  ENABLE_FOLDER_FILTER?: boolean;
+  ENABLE_DRAFT_FILTER?: boolean;
+  ENABLE_TITLE_FILTER?: boolean;
+  // ... additional options
+}
+```
+
+### Functions
+
+```typescript
+export function filterCollection<T>(collection, filters?, astroConfig?): CollectionEntry<T>[]
+export function filterCollectionWithConfig<T>(collection, config, astroConfig?): CollectionEntry<T>[]
+export function buildFiltersFromConfig<T>(config): CollectionFilter<T>[]
+export function combineFilters<T>(baseFilters?, additionalFilters?): CollectionFilter<T>[]
+```
+
+## Examples Repository
+
+For more examples and use cases, see:
+- `site2/src/pages/[locale]/resources/[...slug].astro`
+- `site2/src/pages/resources/[...slug].astro`
+- `polymech/src/components/sidebar/utils.ts`

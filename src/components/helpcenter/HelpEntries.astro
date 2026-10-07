@@ -1,0 +1,20 @@
+---
+const { title, url } = Astro.props;
+---
+<div class="group relative bg-white overflow-hidden group rounded-xl font-mono">
+  <div
+    class="p-4 text-sm text-neutral-500 group-hover:text-orange-600 ">
+    <h3>
+      <a
+        href={url}
+        title={title}
+        aria-label={title}>
+        <span
+          aria-hidden="true"
+          class="absolute inset-0"
+        ></span>
+        {title}
+      </a>
+    </h3>
+  </div>
+</div>

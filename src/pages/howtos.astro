@@ -1,0 +1,185 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Sidebar from "@polymech/astro-base/components/sidebar/Sidebar.astro";
+import MobileToggle from "@polymech/astro-base/components/sidebar/MobileToggle.astro";
+import { getSidebarConfig } from "@polymech/astro-base/config/sidebar";
+import { getCollection } from "astro:content";
+import HowtoCard from "@/components/howtos/HowtoCard.astro";
+import { group_by_cat } from "@/model/howto/howto.js";
+import type { IHowto } from "@/model/howto/howto.js";
+
+const all = await getCollection("howtos");
+const locale = Astro.currentLocale || "en";
+const sidebarConfig = getSidebarConfig();
+
+// Group howtos by category
+const howtosByCategory = group_by_cat(
+  all.map((item) => item.data.item as IHowto),
+);
+const categories = Object.keys(howtosByCategory).sort();
+---
+
+<BaseLayout
+  frontmatter={{
+    title: "How-To Guides",
+    description: "Browse our collection of step-by-step how-to guides",
+  }}
+>
+  <div class="layout-with-sidebar">
+    <!-- Mobile Toggle -->
+    <MobileToggle />
+
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper">
+      <Sidebar config={sidebarConfig} currentUrl={Astro.url} />
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content-with-sidebar">
+      <div class="container mx-auto px-4 py-4 md:px-6 md:py-6">
+        <section class="py-8">
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">How-To Guides</h1>
+            <p class="text-lg text-gray-600 mb-6">
+              {all.length} guide{all.length !== 1 ? "s" : ""} available across {
+                categories.length
+              } categories
+            </p>
+          </div>
+
+          <!-- All Howtos Grid -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">
+              All Guides
+            </h2>
+            <div
+              class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2"
+            >
+              {
+                all.map((item) => (
+                  <HowtoCard
+                    url={`/${locale}/howtos/${item.id}`}
+                    title={item.data.title}
+                    description={item.data.description}
+                    alt={item.data.title}
+                    category={item.data.item.category?.label}
+                    difficulty_level={item.data.item.difficulty_level}
+                    time={item.data.item.time}
+                    total_views={item.data.item.total_views}
+                    total_downloads={item.data.item.total_downloads}
+                    author={item.data.item._createdBy}
+                    tags={
+                      item.data.item.tags?.map((tag) =>
+                        typeof tag === "string" ? tag : tag.label,
+                      ) || []
+                    }
+                    locale={locale}
+                    howto={item.data.item}
+                  />
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Categories Section -->
+          <div class="space-y-12">
+            {
+              categories.map((category) => (
+                <section class="category-section">
+                  <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-900">
+                      {category}
+                    </h2>
+                    <span class="text-sm text-gray-500">
+                      {howtosByCategory[category].length} guide
+                      {howtosByCategory[category].length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+
+                  <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2">
+                    {howtosByCategory[category]
+                      .slice(0, 8)
+                      .map((howto: IHowto) => {
+                        const correspondingItem = all.find(
+                          (item) => item.data.item.slug === howto.slug,
+                        );
+                        return correspondingItem ? (
+                          <HowtoCard
+                            url={`/${locale}/howtos/${correspondingItem.id}`}
+                            title={howto.title}
+                            description={howto.description}
+                            alt={howto.title}
+                            category={howto.category?.label}
+                            difficulty_level={howto.difficulty_level}
+                            time={howto.time}
+                            total_views={howto.total_views}
+                            total_downloads={howto.total_downloads}
+                            author={howto._createdBy}
+                            tags={
+                              howto.tags?.map((tag) =>
+                                typeof tag === "string" ? tag : tag.label,
+                              ) || []
+                            }
+                            locale={locale}
+                            howto={howto}
+                          />
+                        ) : null;
+                      })}
+                  </div>
+
+                  {howtosByCategory[category].length > 8 && (
+                    <div class="mt-6 text-center">
+                      <a
+                        href={`/${locale}/howto-category/${category.toLowerCase().replace(/\s+/g, "-")}`}
+                        class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
+                      >
+                        View all {howtosByCategory[category].length} guides in{" "}
+                        {category}
+                        <svg
+                          class="w-4 h-4 ml-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </a>
+                    </div>
+                  )}
+                </section>
+              ))
+            }
+          </div>
+
+          <!-- Back to top -->
+          <div class="mt-12 text-center">
+            <a
+              href="#top"
+              class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+              </svg>
+              Back to top
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

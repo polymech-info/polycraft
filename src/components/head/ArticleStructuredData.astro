@@ -1,0 +1,42 @@
+---
+import config from "@/config/config.json"
+import { get } from "@/model/registry.js"
+import { default_image } from "config/config.js"
+
+const { frontmatter } = Astro.props
+const title = frontmatter?.title || config.site.title
+const pageUrl = new URL(Astro.url.pathname, Astro.site)
+const image =  frontmatter ? frontmatter.image || default_image() : default_image()
+
+const itemData = frontmatter ? await get("json-ld", {} as any, frontmatter, 
+{
+    url: pageUrl.href,
+}) : null
+
+const meta = config.metadata || { }
+
+let data = itemData || {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: frontmatter?.description || meta.description,
+    //datePublished: createdAt?.toISOString(),
+    //dateModified: updatedAt?.toISOString() ?? undefined,
+    url: pageUrl,
+    thumbnailUrl: image,
+    image: {
+        "@type": "ImageObject",
+        url: image.src || "",
+        caption: image.alt,
+        width: image.width,
+        height: image.height,
+    },
+    author: {
+        "@type": "Person",
+        name: meta.author,
+        description: meta.author_bio,
+        url: meta.author_url                
+    }
+}
+---
+<script type="application/ld+json" set:html={JSON.stringify(data, null, 2)} />

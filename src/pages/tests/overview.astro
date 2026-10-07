@@ -1,0 +1,51 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+import Wrapper from "@/components/containers/Wrapper.astro";
+import { getCollection } from "astro:content";
+import KBot from "@/components/polymech/kbot.astro";
+const allProducts = await getCollection("store");
+const locale = Astro.currentLocale;
+const store = `${locale}/store/`;
+---
+
+<BaseLayout>
+    <Wrapper variant="standard" class="py-4">
+        <section>
+            <div class="py-2 space-y-2">
+                <div class="grid md:grid-cols-1 lg:grid-cols-1 gap-4">
+                    <KBot
+                        template="research"
+                        filters="code"
+                        cache
+                        dst="./temp/software.md"
+                    >
+                        Summarize the following packages, as markdown, add a
+                        table https://git.polymech.io/osr-plastic/osr-cad
+                        https://git.polymech.io/osr-plastic/osr-code-bot
+                    </KBot>
+
+                    <KBot
+                        template="research"
+                        filters="code"
+                        cache
+                        dst="./temp/forum.md"
+                    >
+                        Top posts, as markdown, add a table, with links and
+                        image preview https://forum.files.polymech.info/
+                    </KBot>
+
+                    <KBot
+                        template="research"
+                        filters="code"
+                        cache
+                        dst="./temp/kbot.md"
+                    >
+                        Short summary, as markdown
+                        https://www.npmjs.com/package/@plastichub/kbot
+                    </KBot>
+                </div>
+            </div>
+        </section>
+    </Wrapper></BaseLayout
+>

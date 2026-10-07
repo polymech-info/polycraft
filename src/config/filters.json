@@ -1,0 +1,30 @@
+{
+  "BLACKLIST": [
+    "precious-plastic",
+    "fair-enough",
+    "mad-plastic-labs",
+    "easymoulds",
+    "plasticpreneur",
+    "sustainable-design-studio",
+    "johannplasto"
+  ],
+  "URL_BLACKLIST": [
+    "preciousplastic.com",
+    "community.preciousplastic.com",
+    "bazar.preciousplastic.com",
+    "onearmy.earth",
+    "davehakkens.nl",
+    "sustainabledesign.studio"
+  ],
+  "WORD_BLACKLIST": [
+    "wizard",
+    "magic2",
+    "precious plastic",
+    "onearmy"
+  ],
+  "FILTER_MAP": {
+    "Router": "CNC Router",
+    "laptop stand": "laptoppie",
+    "Car": "tufftuff"
+  }
+} 

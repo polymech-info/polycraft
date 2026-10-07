@@ -1,0 +1,11 @@
+---
+// Example: Fetch Markdown from a remote API
+// and render it to HTML, at runtime.
+// Using "marked" (https://github.com/markedjs/marked)
+import { marked } from 'marked'
+const {...rest} = Astro.props
+const response = await fetch(rest.src || 'https://raw.githubusercontent.com/wiki/adam-p/markdown-here/Markdown-Cheatsheet.md')
+const markdown = await response.text();
+const content = marked.parse(markdown);
+---
+<article set:html={content} />

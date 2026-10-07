@@ -1,0 +1,47 @@
+---
+import { default_image } from "@/app/config.js";
+const { title, url, price, model } = Astro.props;
+const thumbnail =
+  model?.assets?.main_image?.url ||
+  model?.assets?.gallery[0]?.url ||
+  default_image();
+
+const hash = model?.assets?.main_image?.hash || model?.assets?.gallery[0]?.hash;
+
+import Img from "@polymech/astro-base/components/polymech/image.astro";
+---
+
+<div
+  class="group relative overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+>
+  <div class="aspect-square overflow-hidden">
+    <a href={url} title={title} aria-label={title} class="block w-full h-full">
+      <div class="w-full h-full flex items-center justify-center p-0 md:p-1">
+        <Img
+          src={thumbnail}
+          s={hash}
+          alt={title}
+          format="avif"
+          objectFit="contain"
+          placeholder="blurred"
+          sizes="(min-width: 220px) 220px"
+          breakpoints={{ count: 2, minWidth: 120, maxWidth: 430 }}
+          class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+    </a>
+  </div>
+  <div class="p-4">
+    <h3 class="text-sm font-medium line-clamp-2">
+      <a
+        href={url}
+        title={title}
+        aria-label={title}
+        class="hover:text-neutral-900 transition-colors"
+      >
+        <span aria-hidden="true" class="absolute inset-0"></span>
+        {title}
+      </a>
+    </h3>
+  </div>
+</div>
